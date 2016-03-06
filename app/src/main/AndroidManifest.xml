@@ -23,7 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FoodChooserActivity"></activity>
+        <activity android:name=".FoodChooserActivity" />
+        <activity
+            android:name=".OrderOrDeliver"
+            android:label="@string/title_activity_order_or_deliver"></activity>
     </application>
 
 </manifest>
