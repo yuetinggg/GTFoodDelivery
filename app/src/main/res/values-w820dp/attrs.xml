@@ -3,7 +3,8 @@
     <declare-styleable name="orderOrDeliverCircle">
         <attr name="oSideColor" format="color"/>
         <attr name="dSideColor" format="color"/>
-        <attr name="dSideLabel"
+        <attr name="oSideLabelColor" format="color"/>
+        <attr name="dSideLabelColor" format="color"/>
     </declare-styleable>
 </resources>
 
