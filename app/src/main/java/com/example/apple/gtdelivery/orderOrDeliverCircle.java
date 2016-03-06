@@ -3,6 +3,7 @@ package com.example.apple.gtdelivery;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.view.View;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -40,9 +41,24 @@ public class orderOrDeliverCircle extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //draw the View
-        int viewWidthHald = this.getMeasuredWidth()/2;
+        //Creating the Circle
+        int viewWidthHalf = this.getMeasuredWidth()/2;
         int viewHeightHalf = this.getMeasuredHeight()/2;
+        int radius = (int) (viewWidthHalf * 0.75);
+
+        //Setting the paint properties
+        oPaint.setStyle(Paint.Style.FILL);
+        oPaint.setColor(oColor);
+        dPaint.setStyle(Paint.Style.FILL);
+        dPaint.setColor(dColor);
+
+        //Creating the oval for the drawArc to fill
+        RectF oval = new RectF(viewWidthHalf - radius, viewHeightHalf - radius, viewWidthHalf + radius, viewHeightHalf + radius);
+
+        //Drawing the circle using the canvas and paint
+        canvas.drawArc(oval, -75, 180, true, dPaint);
+        canvas.drawArc(oval, 106, 180, true, oPaint);
+
     }
 
 
