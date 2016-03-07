@@ -3,6 +3,7 @@ package com.example.apple.gtdelivery;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -73,11 +74,14 @@ public class LoginActivityMain extends Activity implements LoaderCallbacks<Curso
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    protected Context thisContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_activity_main);
+        thisContext = this;
+
         Firebase.setAndroidContext(this);
         firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
 
@@ -398,7 +402,9 @@ public class LoginActivityMain extends Activity implements LoaderCallbacks<Curso
             showProgress(false);
 
             if (success) {
-                finish();
+                //Automatically goes to OrderOrDeliver for now
+                Intent i = new Intent(thisContext, OrderOrDeliver.class);
+                startActivity(i);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

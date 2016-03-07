@@ -3,7 +3,9 @@ package com.example.apple.gtdelivery;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.view.View;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -18,9 +20,11 @@ public class orderOrDeliverCircle extends View {
     private static String deliver="DELIVER";
     // Paint objects for when the View is drawn
     private Paint oPaint, dPaint, linePaint;
+    private Context thisContext;
 
     public orderOrDeliverCircle(Context context, AttributeSet attrs) {
         super(context, attrs);
+        thisContext = context;
 
         //Create Paint object for OnDraw()
         oPaint = new Paint();
@@ -70,10 +74,13 @@ public class orderOrDeliverCircle extends View {
         //Draw the text
         linePaint.setColor(oLabelColor);
         linePaint.setTextAlign(Paint.Align.CENTER);
-        linePaint.setTextSize(75);
-        canvas.drawText(order, viewWidthHalf - radius + (radius / 5 * 3), viewHeightHalf, linePaint);
+        linePaint.setTypeface(Typeface.createFromAsset(thisContext.getAssets(), "fonts/YanoneKaffeesatz-Light.ttf"));
+        linePaint.setTextSize(100);
+        Rect textBounds = new Rect();
+        linePaint.getTextBounds("a", 0, 1, textBounds);
+        canvas.drawText(order, viewWidthHalf - radius + (radius / 5 * 3), (viewHeightHalf*2 + textBounds.height()) >> 1, linePaint);
         linePaint.setColor(dLabelColor);
-        canvas.drawText(deliver, viewWidthHalf + (radius/5 * 3), viewHeightHalf, linePaint);
+        canvas.drawText(deliver, viewWidthHalf + (radius / 5 * 3), (viewHeightHalf*2 + textBounds.height()) >> 1, linePaint);
 
     }
 
