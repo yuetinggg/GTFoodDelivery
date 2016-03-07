@@ -59,7 +59,7 @@ public class orderOrDeliverCircle extends View {
         dPaint.setColor(dColor);
         linePaint.setColor(lineColor);
         linePaint.setStyle(Paint.Style.FILL);
-        linePaint.setStrokeWidth(5f);
+        linePaint.setStrokeWidth(7f);
 
         //Creating the oval for the drawArc to fill
         RectF oval = new RectF(viewWidthHalf - radius, viewHeightHalf - radius, viewWidthHalf + radius, viewHeightHalf + radius);
@@ -69,7 +69,11 @@ public class orderOrDeliverCircle extends View {
         canvas.drawArc(oval, 105, 180, true, oPaint);
 
         //Drawing the line
-        canvas.drawLine(viewWidthHalf - (radius / 2), (float) (viewHeightHalf + Math.tan(Math.toRadians(75)) * (radius / 2)), radius / 2 + viewWidthHalf, (float) (viewHeightHalf - Math.tan(Math.toRadians(75)) * (radius / 2)), linePaint);
+        float startX = viewWidthHalf - (radius / 3);
+        float startY = (float) (viewHeightHalf + Math.tan(Math.toRadians(75)) * (radius / 3));
+        float endX = radius / 3 + viewWidthHalf;
+        float endY = (float) (viewHeightHalf - Math.tan(Math.toRadians(75)) * (radius / 3));
+        canvas.drawLine(startX, startY, endX, endY, linePaint);
 
         //Draw the text
         linePaint.setColor(oLabelColor);
