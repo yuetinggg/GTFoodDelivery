@@ -76,6 +76,7 @@ public class orderOrDeliverCircle extends View {
         canvas.drawLine(startX, startY, endX, endY, linePaint);
 
         //Draw the text
+        //TODO: Fix the alignment of the order and deliver
         linePaint.setColor(oLabelColor);
         linePaint.setTextAlign(Paint.Align.CENTER);
         linePaint.setTypeface(Typeface.createFromAsset(thisContext.getAssets(), "fonts/YanoneKaffeesatz-Light.ttf"));

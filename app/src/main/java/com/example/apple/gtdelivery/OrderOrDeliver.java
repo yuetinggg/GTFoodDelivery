@@ -28,6 +28,7 @@ public class OrderOrDeliver extends Activity {
                 if (touchX < wholeView.getMeasuredWidth()/2) {
                     toOrder();
                 } else {
+                    //TODO: Implement start the delivery activity
                     toDeliver();
                 }
                 return true;
@@ -41,6 +42,7 @@ public class OrderOrDeliver extends Activity {
         startActivity(i);
     }
 
+    //TODO: Implement starting the new activity for delivery
     private void toDeliver() {
         Intent i = new Intent(this, FoodChooserActivity.class);
         //startActivity(i);
