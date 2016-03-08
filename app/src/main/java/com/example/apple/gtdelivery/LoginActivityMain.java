@@ -3,6 +3,7 @@ package com.example.apple.gtdelivery;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -226,14 +227,18 @@ public class LoginActivityMain extends Activity implements LoaderCallbacks<Curso
                             map.put("displayName", authData.getProviderData().get("displayName").toString());
                         }
                         firebaseRef.child("users").child(authData.getUid()).setValue(map);
-                        Intent intent = new Intent(LoginActivityMain.this, FoodChooserActivity.class);
+                        Intent intent = new Intent(LoginActivityMain.this, OrderOrDeliver.class);
                         startActivity(intent);
                     }
 
                     @Override
                     public void onAuthenticationError(FirebaseError error) {
                         // Something went wrong :(
-                        System.out.println(error.getMessage());
+                        System.out.println("ERROR: " + error.getMessage());
+                        AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivityMain.this);
+                        alert.setTitle("Login error");
+                        alert.setMessage(error.getMessage()).setCancelable(true);
+                        alert.show();
                     }
                 });
 
@@ -249,12 +254,20 @@ public class LoginActivityMain extends Activity implements LoaderCallbacks<Curso
             public void onSuccess(Map<String, Object> result) {
                 System.out.println("Successfully created user account with uid: " + result.get("uid"));
                 firebaseRef.updateChildren(result);
+                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivityMain.this);
+                alert.setTitle("Registered!");
+                alert.setMessage("").setCancelable(true);
+                alert.show();
             }
 
             @Override
             public void onError(FirebaseError firebaseError) {
                 // there was an error
                 System.out.println(firebaseError.getMessage());
+                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivityMain.this);
+                alert.setTitle("Login error");
+                alert.setMessage(firebaseError.getMessage()).setCancelable(true);
+                alert.show();
             }
         });
     }
@@ -402,9 +415,7 @@ public class LoginActivityMain extends Activity implements LoaderCallbacks<Curso
             showProgress(false);
 
             if (success) {
-                //Automatically goes to OrderOrDeliver for now
-                Intent i = new Intent(thisContext, OrderOrDeliver.class);
-                startActivity(i);
+
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
