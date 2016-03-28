@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import android.preference.DialogPreference;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import at.markushi.ui.CircleButton;
+
 public class FoodChooserActivity extends Activity implements View.OnClickListener {
     Context current;
     String[] iconString = {"chick.png", "tacoBell.png", "pandaExpress.png"};
@@ -34,7 +38,7 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
     ListView menu;
     List<List<MenuItem>> allMenus;
     Firebase firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
-
+    CircleButton button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +110,14 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
             //Add to the scroll
             iconScroll.addView(r);
         }
+        button = (CircleButton) findViewById(R.id.circleButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FoodChooserActivity.this, OrderSearchActivity.class);
+                startActivity(intent);
+            }
+        });
     }
     private static Bitmap getBitmapFromAsset(Context context, String filePath) {
         AssetManager assetManager = context.getAssets();

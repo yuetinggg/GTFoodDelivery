@@ -51,10 +51,12 @@
         android:layout_gravity="center"
         android:layout_width="64dip"
         android:layout_height="64dip"
+        android:id="@+id/circleButton"
         app:cb_color="@color/primaryPink"
         app:cb_pressedRingWidth="8dip"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="25dp"
-        android:src="@drawable/ic_tick"/>
+        android:src="@drawable/ic_tick"
+        android:clickable="true" />
 
 </LinearLayout>
