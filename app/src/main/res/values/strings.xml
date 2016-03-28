@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">GTDelivery</string>
     <string name="title_activity_login_activity_main">Sign in</string>
+    <string name="yes">Confirm</string>
+    <string name="no">Cancel</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -15,4 +17,5 @@
         completions."
     </string>
     <string name="title_activity_order_or_deliver">OrderOrDeliver</string>
+    <string name="title_activity_order_search">OrderSearchActivity</string>
 </resources>

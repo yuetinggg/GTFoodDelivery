@@ -216,6 +216,7 @@ public class LoginActivityMain extends Activity implements LoaderCallbacks<Curso
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
+        final String emailCopy = email;
         firebaseRef.authWithPassword(email, password,
                 new Firebase.AuthResultHandler() {
                     @Override
@@ -223,11 +224,14 @@ public class LoginActivityMain extends Activity implements LoaderCallbacks<Curso
                         // Authentication just completed successfully :)
                         Map<String, String> map = new HashMap<String, String>();
                         map.put("provider", authData.getProvider());
+                        map.put("email", emailCopy);
                         if (authData.getProviderData().containsKey("displayName")) {
                             map.put("displayName", authData.getProviderData().get("displayName").toString());
                         }
                         firebaseRef.child("users").child(authData.getUid()).setValue(map);
                         Intent intent = new Intent(LoginActivityMain.this, OrderOrDeliver.class);
+                        intent.putExtra("uid", authData.getUid());
+                        intent.putExtra("email", emailCopy);
                         startActivity(intent);
                     }
 

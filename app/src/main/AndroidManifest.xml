@@ -26,7 +26,10 @@
         <activity android:name=".FoodChooserActivity" />
         <activity
             android:name=".OrderOrDeliver"
-            android:label="@string/title_activity_order_or_deliver"></activity>
+            android:label="@string/title_activity_order_or_deliver" />
+        <activity
+            android:name=".OrderSearchActivity"
+            android:label="@string/title_activity_order_search"></activity>
     </application>
 
 </manifest>

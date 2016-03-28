@@ -22,13 +22,14 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="351dp"
-        android:layout_height="166dp">
+        android:layout_height="200dp">
 
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:weightSum="1">
 
             <AutoCompleteTextView
                 android:id="@+id/email"
@@ -60,13 +61,14 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="REGISTER"
+                android:id="@+id/RegisterButton"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="11.16" />
+
         </LinearLayout>
     </ScrollView>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="REGISTER"
-        android:id="@+id/RegisterButton"
-        android:layout_gravity="center_horizontal" />
 </LinearLayout>

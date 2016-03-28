@@ -1,27 +1,30 @@
 package com.example.apple.gtdelivery;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.DialogPreference;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.HorizontalScrollView;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.firebase.client.Firebase;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FoodChooserActivity extends Activity implements View.OnClickListener {
     Context current;
@@ -29,7 +32,8 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
     LinearLayout iconScroll;
     ArrayList<RoundedImageView> iconViews;
     ListView menu;
-    List<List<menuItem>> allMenus;
+    List<List<MenuItem>> allMenus;
+    Firebase firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
 
 
     @Override
@@ -37,30 +41,31 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_chooser);
         current = this;
+        Firebase.setAndroidContext(this);
 
         //Hardcoding menus for now
         //Chick-fil-a menu
         String c = "Chick-Fil-A";
-        List<menuItem> chick = new ArrayList<menuItem>();
-        chick.add(new menuItem(c, "Milkshake", "$3.99"));
-        chick.add(new menuItem(c, "Burger", "$5.99"));
-        chick.add(new menuItem(c, "Fries", "$4.99"));
+        List<MenuItem> chick = new ArrayList<MenuItem>();
+        chick.add(new MenuItem(c, "Milkshake", "$3.99"));
+        chick.add(new MenuItem(c, "Burger", "$5.99"));
+        chick.add(new MenuItem(c, "Fries", "$4.99"));
 
         //tacoBell menu
         String t = "Taco Bell";
-        List<menuItem> taco = new ArrayList<menuItem>();
-        taco.add(new menuItem(t, "Nachos", "$3.99"));
-        taco.add(new menuItem(t, "Salad", "$5.99"));
-        taco.add(new menuItem(t, "Burrito", "$4.99"));
+        List<MenuItem> taco = new ArrayList<MenuItem>();
+        taco.add(new MenuItem(t, "Nachos", "$3.99"));
+        taco.add(new MenuItem(t, "Salad", "$5.99"));
+        taco.add(new MenuItem(t, "Burrito", "$4.99"));
 
         //pandaExpress menu
         String p = "Panda Express";
-        List<menuItem> panda = new ArrayList<menuItem>();
-        panda.add(new menuItem(p, "Beijing Beef", "$3.99"));
-        panda.add(new menuItem(p, "Chicken Terriyaki", "$5.99"));
-        panda.add(new menuItem(p, "Broccoli", "$4.99"));
+        List<MenuItem> panda = new ArrayList<MenuItem>();
+        panda.add(new MenuItem(p, "Beijing Beef", "$3.99"));
+        panda.add(new MenuItem(p, "Chicken Terriyaki", "$5.99"));
+        panda.add(new MenuItem(p, "Broccoli", "$4.99"));
 
-        allMenus = new ArrayList<List<menuItem>>();
+        allMenus = new ArrayList<List<MenuItem>>();
         allMenus.add(chick);
         allMenus.add(taco);
         allMenus.add(panda);
@@ -71,8 +76,9 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
 
         //Retrieving the listview for menu
         menu = (ListView) findViewById(R.id.menuList);
-        menuItemAdapter adapter = new menuItemAdapter(allMenus.get(allMenus.size()/2), current);
+        MenuItemAdapter adapter = new MenuItemAdapter(allMenus.get(allMenus.size()/2), current);
         menu.setAdapter(adapter);
+        menu.setOnItemClickListener(new MenuOnItemClickListener(allMenus.get(allMenus.size()/2)));
 
         //Dealing with the onclick for each icon
         iconViews = new ArrayList<RoundedImageView>();
@@ -85,7 +91,7 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
             //Create roundedImageView for each icon
             RoundedImageView r = new RoundedImageView(this);
             iconViews.add(r);
-            Log.d("MyApp", "RID: " + r.getId());
+            //Log.d("MyApp", "RID: " + r.getId());
             r.setPadding(20, 20, 20, 20);
             r.setScaleType(ImageView.ScaleType.CENTER_CROP);
             r.setCornerRadius((float) 30);
@@ -101,7 +107,6 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
             iconScroll.addView(r);
         }
     }
-
     private static Bitmap getBitmapFromAsset(Context context, String filePath) {
         AssetManager assetManager = context.getAssets();
 
@@ -120,11 +125,45 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         int i = 0;
-        Log.d("MyApp", "Click:" + i);
+        //Log.d("MyApp", "Click:" + i);
         while (i < iconViews.size() && iconViews.get(i) != v) {
             i++;
         }
-        menuItemAdapter adapter = new menuItemAdapter(allMenus.get(i), current);
+        MenuItemAdapter adapter = new MenuItemAdapter(allMenus.get(i), current);
         menu.setAdapter(adapter);
+        menu.setOnItemClickListener(new MenuOnItemClickListener(allMenus.get(i)));
+    }
+    private class MenuOnItemClickListener implements AdapterView.OnItemClickListener {
+        private List<MenuItem> items;
+        public MenuOnItemClickListener(List<MenuItem> items) {
+            this.items = items;
+        }
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            String message = "Restaurant Name: " + items.get(position).getrName() + "\n" +
+                    "Food Item: " + items.get(position).getName() + "\n" +
+                    "Price: " + items.get(position).getPrice();
+            AlertDialog.Builder alert = new AlertDialog.Builder(FoodChooserActivity.this);
+            alert.setTitle("Confirm Order");
+            final int pos = position;
+            alert.setMessage(message).setCancelable(false).
+                    setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    }).
+                    setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+//                            System.out.println("UID: " + firebaseRef.getAuth().getUid());
+                            Firebase userRef = firebaseRef.child("status_table").child(firebaseRef.getAuth().getUid());
+                            Map<String, Object> map = new HashMap<String, Object>();
+                            map.put("Food Item", items.get(pos).getName());
+                            map.put("Restaurant", items.get(pos).getrName());
+                            map.put("Price", items.get(pos).getPrice());
+                            userRef.updateChildren(map);
+                        }
+                    }).show();
+        }
     }
 }

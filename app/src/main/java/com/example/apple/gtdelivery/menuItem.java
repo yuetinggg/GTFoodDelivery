@@ -3,12 +3,12 @@ package com.example.apple.gtdelivery;
 /**
  * Created by yuetinggg on 3/8/16.
  */
-public class menuItem {
+public class MenuItem {
     private String rName;
     private String name;
     private String price;
 
-    public menuItem(String rName, String name, String price) {
+    public MenuItem(String rName, String name, String price) {
         this.rName = rName;
         this.name = name;
         this.price = price;
