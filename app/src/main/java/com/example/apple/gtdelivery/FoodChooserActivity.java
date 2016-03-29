@@ -114,7 +114,8 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FoodChooserActivity.this, OrderSearchActivity.class);
+//                Intent intent = new Intent(FoodChooserActivity.this, OrderSearchActivity.class);
+                Intent intent = new Intent(FoodChooserActivity.this, LocationSelector.class);
                 startActivity(intent);
             }
         });

@@ -18,4 +18,5 @@
     </string>
     <string name="title_activity_order_or_deliver">OrderOrDeliver</string>
     <string name="title_activity_order_search">OrderSearchActivity</string>
+    <string name="title_activity_location_selector">LocationSelector</string>
 </resources>

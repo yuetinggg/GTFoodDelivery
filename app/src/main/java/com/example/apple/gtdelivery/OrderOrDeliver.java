@@ -47,7 +47,7 @@ public class OrderOrDeliver extends Activity {
                     map.put("Status", "O");
                     HashMap<String, HashMap<String, Object>> mainMap = new HashMap<String, HashMap<String, Object>>();
                     mainMap.put(uid, map);
-                    firebaseRef.child("status_table").setValue(mainMap);
+                    firebaseRef.child("status_table").child(uid).updateChildren(map);
                     toOrder();
                 } else {
                     //TODO: Implement start the delivery activity

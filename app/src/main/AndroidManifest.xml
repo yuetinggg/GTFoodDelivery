@@ -29,7 +29,10 @@
             android:label="@string/title_activity_order_or_deliver" />
         <activity
             android:name=".OrderSearchActivity"
-            android:label="@string/title_activity_order_search"></activity>
+            android:label="@string/title_activity_order_search" />
+        <activity
+            android:name=".LocationSelector"
+            android:label="@string/title_activity_location_selector"></activity>
     </application>
 
 </manifest>
