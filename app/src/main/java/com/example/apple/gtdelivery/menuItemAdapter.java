@@ -56,7 +56,7 @@ public class MenuItemAdapter extends BaseAdapter {
         //Making the format of the list
         Context c = convertView.getContext();
         holder.itemName.setTypeface(Typeface.createFromAsset(c.getAssets(), "fonts/YanoneKaffeesatz-Light.ttf"));
-        holder.itemPrice.setTypeface(Typeface.createFromAsset(c.getAssets(), "fonts/BADABB.TTF"));
+        holder.itemPrice.setTypeface(Typeface.createFromAsset(c.getAssets(), "fonts/BADABB.ttf"));
         holder.itemName.setTextSize(20);
         holder.itemPrice.setTextSize(20);
 

@@ -110,6 +110,7 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
             //Add to the scroll
             iconScroll.addView(r);
         }
+        
         button = (CircleButton) findViewById(R.id.circleButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
