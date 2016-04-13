@@ -1,9 +1,11 @@
 package com.example.apple.gtdelivery;
 
+import java.io.Serializable;
+
 /**
  * Created by yuetinggg on 3/8/16.
  */
-public class MenuItem {
+public class MenuItem implements Serializable{
     private String rName;
     private String name;
     private String price;

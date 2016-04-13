@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -39,6 +40,9 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
     List<List<MenuItem>> allMenus;
     Firebase firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
     CircleButton button;
+
+    //Order information
+    ArrayList<MenuItem> order;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,14 +114,21 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
             //Add to the scroll
             iconScroll.addView(r);
         }
-        
+
+        //Setting up the order
+        order = new ArrayList<MenuItem>();
+
         button = (CircleButton) findViewById(R.id.circleButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(FoodChooserActivity.this, OrderSearchActivity.class);
-                Intent intent = new Intent(FoodChooserActivity.this, LocationSelector.class);
-                startActivity(intent);
+                Intent intent = new Intent(current, ConfirmOrder.class);
+                if (order.size() < 1) {
+                    Toast.makeText(current, "Please add items to your order!", Toast.LENGTH_SHORT);
+                } else {
+                    intent.putExtra("ORDER_INFORMATION", order);
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -153,9 +164,11 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
             this.items = items;
         }
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String message = "Restaurant Name: " + items.get(position).getrName() + "\n" +
-                    "Food Item: " + items.get(position).getName() + "\n" +
-                    "Price: " + items.get(position).getPrice();
+            order.add(items.get(position));
+            String message = items.get(position).getName() + "added to order!";
+            Toast.makeText(current, message, Toast.LENGTH_SHORT);
+
+            /*
             AlertDialog.Builder alert = new AlertDialog.Builder(FoodChooserActivity.this);
             alert.setTitle("Confirm Order");
             final int pos = position;
@@ -177,7 +190,7 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
                             map.put("Price", items.get(pos).getPrice());
                             userRef.updateChildren(map);
                         }
-                    }).show();
+                    }).show();*/
         }
     }
 }

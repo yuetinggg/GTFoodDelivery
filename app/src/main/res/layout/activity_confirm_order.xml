@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.example.apple.gtdelivery.ConfirmOrder">
+
+
+    <View
+        android:paddingTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/darkGrey"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/orderList"
+        android:clickable="true">
+
+    </ListView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:text="Delivery Fee:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"/>
+
+
+        <TextView
+            android:id="@+id/DeliveryFee"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/primaryBlue"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:text="Total (tax included):"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"/>
+
+
+        <TextView
+            android:id="@+id/Total"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/primaryBlue"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <View
+        android:paddingBottom="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/darkGrey"/>
+
+    <at.markushi.ui.CircleButton
+        android:layout_gravity="center"
+        android:layout_width="64dip"
+        android:layout_height="64dip"
+        android:id="@+id/circleButton"
+        app:cb_color="@color/primaryPink"
+        app:cb_pressedRingWidth="8dip"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:src="@drawable/ic_tick"
+        android:clickable="true" />
+
+</LinearLayout>
