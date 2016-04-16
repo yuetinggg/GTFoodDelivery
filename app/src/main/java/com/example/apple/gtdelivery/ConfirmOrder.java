@@ -1,12 +1,16 @@
 package com.example.apple.gtdelivery;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ami.fundapter.BindDictionary;
 import com.ami.fundapter.FunDapter;
@@ -21,6 +25,12 @@ import java.util.ArrayList;
 
 import java.math.RoundingMode;
 import java.util.Currency;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.firebase.client.Firebase;
+
+import at.markushi.ui.CircleButton;
 
 public class ConfirmOrder extends Activity {
     ArrayList<MenuItem> order;
@@ -31,21 +41,26 @@ public class ConfirmOrder extends Activity {
     TextView deliveryFeeView;
     DecimalFormat df;
     AutoCompleteTextView location;
+    CircleButton done;
+    Context current;
+
+    Firebase firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_order);
+        Firebase.setAndroidContext(this);
 
         //Get the order from previous activity
         Bundle extras = getIntent().getExtras();
         order = (ArrayList<MenuItem>) extras.getSerializable("ORDER_INFORMATION");
+        current = this;
 
         updateTotal();
 
         //Setting the numbers, and the decimal format
-        df = new DecimalFormat();
-        df.setCurrency(Currency.getInstance("USD"));
+        df = new DecimalFormat("$#.00");
 
         totalView = (TextView) findViewById(R.id.Total);
         deliveryFeeView = (TextView) findViewById(R.id.DeliveryFee);
@@ -82,6 +97,35 @@ public class ConfirmOrder extends Activity {
         FunDapter<MenuItem> adapt = new FunDapter<>(this, order, R.layout.order_confirm_item, dictionary);
 
         menu.setAdapter(adapt);
+
+        //Setting on click listener for done button
+        done = (CircleButton) findViewById(R.id.circleButton);
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (location.getText() == null || location.getText().toString() == "") {
+                    Toast.makeText(current, "Please select delivery location.", Toast.LENGTH_LONG);
+                } else {
+                    Firebase userRef = firebaseRef.child("status_table").child(firebaseRef.getAuth().getUid());
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    ArrayList foodItems = new ArrayList<>();
+                    for (MenuItem m : order) {
+                        foodItems.add(m.getName());
+                    }
+                    //Assumes that the restaurant is the same restaurant
+                    String restaurant = order.get(0).getrName();
+                    map.put("Food Items", foodItems);
+                    map.put("Restaurant", restaurant);
+                    map.put("Delivery Fee", deliveryFee);
+                    map.put("Total", total);
+                    map.put("Location", location.getText().toString());
+                    map.put("Status", "O");
+                    userRef.updateChildren(map);
+                    Intent intent = new Intent(ConfirmOrder.this, OrderSearchActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
     }
 
