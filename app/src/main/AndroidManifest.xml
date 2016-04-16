@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.apple.gtdelivery" >
+    package="com.example.apple.gtdelivery">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -13,10 +13,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".LoginActivityMain"
-            android:label="@string/title_activity_login_activity_main" >
+            android:label="@string/title_activity_login_activity_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,8 +35,13 @@
             android:label="@string/title_activity_location_selector" />
         <activity
             android:name=".ConfirmOrder"
-            android:label="@string/title_activity_confirm_order" >
-        </activity>
+            android:label="@string/title_activity_confirm_order" />
+        <activity
+            android:name=".Delivering"
+            android:label="@string/title_activity_delivering" />
+        <activity
+            android:name=".OrderChooserActivity"
+            android:label="@string/title_activity_order_chooser"></activity>
     </application>
 
 </manifest>

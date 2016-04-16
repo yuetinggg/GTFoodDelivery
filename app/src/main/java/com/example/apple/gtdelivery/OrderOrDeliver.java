@@ -66,8 +66,8 @@ public class OrderOrDeliver extends Activity {
 
     //TODO: Implement starting the new activity for delivery
     private void toDeliver() {
-        Intent i = new Intent(this, FoodChooserActivity.class);
-        //startActivity(i);
+        Intent i = new Intent(this, OrderChooserActivity.class);
+        startActivity(i);
     }
 
 }

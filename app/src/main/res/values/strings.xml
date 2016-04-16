@@ -20,4 +20,6 @@
     <string name="title_activity_order_search">OrderSearchActivity</string>
     <string name="title_activity_location_selector">LocationSelector</string>
     <string name="title_activity_confirm_order">ConfirmOrder</string>
+    <string name="title_activity_delivering">Delivering</string>
+    <string name="title_activity_order_chooser">OrderChooserActivity</string>
 </resources>
