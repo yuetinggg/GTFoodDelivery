@@ -18,6 +18,7 @@ public class OrderOrDeliver extends Activity {
     Firebase firebaseRef;
     String uid;
     String email;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,15 +43,11 @@ public class OrderOrDeliver extends Activity {
                     HashMap<String, Object> map = new HashMap<String, Object>();
                     map.put("email", email);
                     map.put("Restaurant", "");
-                    map.put("Food Item", "");
-                    map.put("Price", 0.0);
-                    map.put("Status", "O");
                     HashMap<String, HashMap<String, Object>> mainMap = new HashMap<String, HashMap<String, Object>>();
                     mainMap.put(uid, map);
                     firebaseRef.child("status_table").child(uid).updateChildren(map);
                     toOrder();
                 } else {
-                    //TODO: Implement start the delivery activity
                     toDeliver();
                 }
                 return true;
@@ -64,7 +61,6 @@ public class OrderOrDeliver extends Activity {
         startActivity(i);
     }
 
-    //TODO: Implement starting the new activity for delivery
     private void toDeliver() {
         Intent i = new Intent(this, OrderChooserActivity.class);
         startActivity(i);
