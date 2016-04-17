@@ -7,20 +7,22 @@ import java.util.ArrayList;
  */
 public class Order {
     private double deliveryFee;
-    private double total;
-    private String restaurant;
     private ArrayList<String> foodItems;
     private String deliveryLocation;
+    private String restaurant;
+    private String status;
+    private double total;
     private String email;
     private String ordererName;
     private int ordererRating;
 
-    public Order(double deliveryFee, double total, String restaurant, ArrayList<String> foodItems, String deliveryLocation, String email, String ordererName, int ordererRating) {
+    public Order(double deliveryFee, ArrayList<String> foodItems, String deliveryLocation, String restaurant, String status, double total, String email, String ordererName, int ordererRating) {
         this.deliveryFee = deliveryFee;
-        this.total = total;
-        this.restaurant = restaurant;
         this.foodItems = foodItems;
         this.deliveryLocation = deliveryLocation;
+        this.restaurant = restaurant;
+        this.status = status;
+        this.total = total;
         this.email = email;
         this.ordererName = ordererName;
         this.ordererRating = ordererRating;
