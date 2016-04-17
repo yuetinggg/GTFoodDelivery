@@ -29,14 +29,14 @@ public class localUser {
         pref = context.getSharedPreferences(MY_PREFS_NAME, 0);
     }
 
-    public void logUserIn(localUser user) {
+    public void logUserIn() {
         SharedPreferences.Editor edit = pref.edit();
         edit.putBoolean("loggedIn", true);
-        edit.putString("Email", user.getEmail());
-        edit.putString("Name", user.getName());
-        edit.putInt("Rating", user.getRating());
-        edit.putString("Status", user.getStatus());
-        edit.putString("uid", user.getUid());
+        edit.putString("Email", email);
+        edit.putString("Name", name);
+        edit.putInt("Rating", rating);
+        edit.putString("Status", status);
+        edit.putString("uid", uid);
         edit.commit();
     }
 

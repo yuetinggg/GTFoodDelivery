@@ -229,9 +229,8 @@ public class LoginActivityMain extends Activity implements LoaderCallbacks<Curso
                             map.put("displayName", authData.getProviderData().get("displayName").toString());
                         }
                         firebaseRef.child("users").child(authData.getUid()).setValue(map);
+                        localUser user = new User()
                         Intent intent = new Intent(LoginActivityMain.this, OrderOrDeliver.class);
-                        intent.putExtra("uid", authData.getUid());
-                        intent.putExtra("email", emailCopy);
                         startActivity(intent);
                     }
 
