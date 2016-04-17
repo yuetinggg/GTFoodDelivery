@@ -3,9 +3,13 @@ package com.example.apple.gtdelivery;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Created by yuetinggg on 4/16/16.
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class localUser {
     private String email;
     private String name;
@@ -15,7 +19,9 @@ public class localUser {
     public static final String MY_PREFS_NAME = "UserPrefs";
     SharedPreferences pref;
 
+    public localUser() {}
 
+    @JsonIgnore
     public localUser(String email, String name, int rating, String status, String uid, Context context) {
         this.email = email;
         this.name = name;
@@ -25,10 +31,12 @@ public class localUser {
         pref = context.getSharedPreferences(MY_PREFS_NAME, 0);
     }
 
+    @JsonIgnore
     public localUser(Context context) {
         pref = context.getSharedPreferences(MY_PREFS_NAME, 0);
     }
 
+    @JsonIgnore
     public void logUserIn() {
         SharedPreferences.Editor edit = pref.edit();
         edit.putBoolean("loggedIn", true);
@@ -40,10 +48,12 @@ public class localUser {
         edit.commit();
     }
 
+    @JsonIgnore
     public boolean isLoggedIn() {
         return pref.getBoolean("loggedIn", false);
     }
 
+    @JsonIgnore
     public boolean logOut() {
         if (!isLoggedIn()) {
             return false;
@@ -74,5 +84,10 @@ public class localUser {
 
     public String getUid() {
         return (uid == null ? pref.getString("uid", ""):uid);
+    }
+
+    @JsonIgnore
+    public void setPref(Context context) {
+        pref = context.getSharedPreferences(MY_PREFS_NAME, 0);
     }
 }

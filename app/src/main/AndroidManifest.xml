@@ -41,7 +41,10 @@
             android:label="@string/title_activity_delivering" />
         <activity
             android:name=".OrderChooserActivity"
-            android:label="@string/title_activity_order_chooser"></activity>
+            android:label="@string/title_activity_order_chooser" />
+        <activity
+            android:name=".SignupActivity"
+            android:label="@string/title_activity_signup"></activity>
     </application>
 
 </manifest>
