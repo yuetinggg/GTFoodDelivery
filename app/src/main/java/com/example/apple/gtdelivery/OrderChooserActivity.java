@@ -71,7 +71,7 @@ public class OrderChooserActivity extends Activity {
             public void onCancelled(FirebaseError firebaseError) {
 
             }
-        })
+        });
 
     }
 

@@ -57,22 +57,22 @@ public class localUser {
 
 
     public String getEmail() {
-        return email;
+        return (email == null ? pref.getString("Email", ""):email);
     }
 
     public String getName() {
-        return name;
+        return (name == null ? pref.getString("Name", ""):email);
     }
 
     public int getRating() {
-        return rating;
+        return (rating == 0 ? pref.getInt("Rating", 0):rating);
     }
 
     public String getStatus() {
-        return status;
+        return (status == null ? pref.getString("Status", ""):email);
     }
 
     public String getUid() {
-        return uid;
+        return (uid == null ? pref.getString("uid", ""):uid);
     }
 }

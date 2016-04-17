@@ -40,12 +40,6 @@ public class OrderOrDeliver extends Activity {
                 float touchY = event.getY();
 
                 if (touchX < wholeView.getMeasuredWidth()/2) {
-                    HashMap<String, Object> map = new HashMap<String, Object>();
-                    map.put("email", email);
-                    map.put("Restaurant", "");
-                    HashMap<String, HashMap<String, Object>> mainMap = new HashMap<String, HashMap<String, Object>>();
-                    mainMap.put(uid, map);
-                    firebaseRef.child("status_table").child(uid).updateChildren(map);
                     toOrder();
                 } else {
                     toDeliver();

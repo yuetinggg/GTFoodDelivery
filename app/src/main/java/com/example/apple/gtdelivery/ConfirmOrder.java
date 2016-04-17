@@ -43,6 +43,7 @@ public class ConfirmOrder extends Activity {
     AutoCompleteTextView location;
     CircleButton done;
     Context current;
+    localUser user;
 
     Firebase firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
 
@@ -51,6 +52,7 @@ public class ConfirmOrder extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_order);
         Firebase.setAndroidContext(this);
+        user = new localUser(this);
 
         //Get the order from previous activity
         Bundle extras = getIntent().getExtras();
@@ -114,6 +116,9 @@ public class ConfirmOrder extends Activity {
                     }
                     //Assumes that the restaurant is the same restaurant
                     String restaurant = order.get(0).getrName();
+                    map.put("Email", user.getEmail());
+                    map.put("ordererName", user.getName());
+                    map.put("ordererRating", user.getRating());
                     map.put("Food Items", foodItems);
                     map.put("Restaurant", restaurant);
                     map.put("Delivery Fee", deliveryFee);
