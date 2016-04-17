@@ -26,7 +26,7 @@ public class OrderChooserActivity extends Activity {
         firebaseref = new Firebase("https://gtfood.firebaseio.com/");
         Firebase statusTableRef = firebaseref.child("status_table");
 
-        Query orderQuery = firebaseref.orderByChild("Status").equalTo("O");
+        Query orderQuery = statusTableRef.orderByChild("Status").equalTo("O");
 
         //Setting up current available orders via querying Firebase
         availableOrders = new ArrayList<>();
