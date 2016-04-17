@@ -34,11 +34,8 @@ public class OrderChooserActivity extends Activity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child: dataSnapshot.getChildren()) {
-                    ArrayList foodItems = new ArrayList<>();
-                    
-                    for (DataSnapshot child.getChild("): child.get)
-                    Order current = new Order(child.getKey("DeliveryFee"), child.getKey("Total"), child.getKey())
-                    availableOrders.add(child.getValue("Delivery Fee"))
+                    Order order = child.getValue(Order.class);
+                    availableOrders.add(order);
                 }
             }
 
