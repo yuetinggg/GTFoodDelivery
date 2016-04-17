@@ -116,15 +116,15 @@ public class ConfirmOrder extends Activity {
                     }
                     //Assumes that the restaurant is the same restaurant
                     String restaurant = order.get(0).getrName();
-                    map.put("Email", user.getEmail());
+                    map.put("email", user.getEmail());
                     map.put("ordererName", user.getName());
                     map.put("ordererRating", user.getRating());
-                    map.put("Food Items", foodItems);
-                    map.put("Restaurant", restaurant);
-                    map.put("Delivery Fee", deliveryFee);
-                    map.put("Total", total);
-                    map.put("Location", location.getText().toString());
-                    map.put("Status", "O");
+                    map.put("foodItems", foodItems);
+                    map.put("restaurant", restaurant);
+                    map.put("deliveryFee", deliveryFee);
+                    map.put("total", total);
+                    map.put("deliveryLocation", location.getText().toString());
+                    map.put("status", "O");
                     userRef.updateChildren(map);
                     Intent intent = new Intent(ConfirmOrder.this, OrderSearchActivity.class);
                     startActivity(intent);

@@ -1,10 +1,14 @@
 package com.example.apple.gtdelivery;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.ArrayList;
 
 /**
  * Created by yuetinggg on 4/16/16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Order {
     private double deliveryFee;
     private ArrayList<String> foodItems;
@@ -16,6 +20,10 @@ public class Order {
     private String ordererName;
     private int ordererRating;
 
+    //Needed for JSON deserialization when retrieving from Firebase
+    public Order() {}
+
+    @JsonIgnore
     public Order(double deliveryFee, ArrayList<String> foodItems, String deliveryLocation, String restaurant, String status, double total, String email, String ordererName, int ordererRating) {
         this.deliveryFee = deliveryFee;
         this.foodItems = foodItems;
@@ -59,4 +67,6 @@ public class Order {
     public String getEmail() {
         return email;
     }
+
+    public String getStatus() { return status; }
 }
