@@ -3,6 +3,9 @@ package com.example.apple.gtdelivery;
 import android.os.Bundle;
 import android.app.Activity;
 
+import com.ami.fundapter.BindDictionary;
+import com.ami.fundapter.FunDapter;
+import com.ami.fundapter.extractors.StringExtractor;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -29,6 +32,9 @@ public class OrderChooserActivity extends Activity {
         Query orderQuery = statusTableRef.orderByChild("Status").equalTo("O");
 
         //Setting up current available orders via querying Firebase
+        //Current available orders are not sorted at all, ie. the deliverer has to go
+        //through every order to find one that is at the same location as them
+        //TODO: Implement sorting logic
         availableOrders = new ArrayList<>();
         orderQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -45,33 +51,30 @@ public class OrderChooserActivity extends Activity {
             }
         });
 
-        //Realtime checking if any of the available orders have become unavailable
-        orderQuery.addChildEventListener(new ChildEventListener() {
+        //Making adapter for Order class using Fundapter
+        BindDictionary<Order> dictionary = new BindDictionary<Order>();
+        dictionary.addStringField(R.id.ordererName, new StringExtractor<Order>() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
+            public String getStringValue(Order order, int i) {
+                return order.getOrdererName();
             }
         });
+
+        dictionary.addStringField(R.id.ordererRating, new StringExtractor<Order>() {
+            @Override
+            public String getStringValue(Order order, int i) {
+                return order.getOrdererRating() + "";
+            }
+        });
+
+        dictionary.addStringField(R.id.deliveryFee, new StringExtractor<Order>() {
+            @Override
+            public String getStringValue(Order order, int i) {
+                return "$" + order.getDeliveryFee() + "";
+            }
+        });
+
+        FunDapter<Order> adapter = new FunDapter<>(getBaseContext(), availableOrders, R.layout.available_orders_list_item, dictionary);
 
     }
 

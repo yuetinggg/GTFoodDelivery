@@ -165,8 +165,8 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
         }
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             order.add(items.get(position));
-            String message = items.get(position).getName() + "added to order!";
-            Toast.makeText(current, message, Toast.LENGTH_SHORT);
+            String message = items.get(position).getName() + " added to order!";
+            Toast.makeText(current, message, Toast.LENGTH_SHORT).show();
 
             /*
             AlertDialog.Builder alert = new AlertDialog.Builder(FoodChooserActivity.this);
