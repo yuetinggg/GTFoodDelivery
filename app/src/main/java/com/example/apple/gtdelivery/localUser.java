@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.stripe.android.model.Card;
 
 /**
  * Created by yuetinggg on 4/16/16.
@@ -17,17 +18,19 @@ public class localUser {
     private String status;
     private String uid;
     public static final String MY_PREFS_NAME = "UserPrefs";
+    private String customerId;
     SharedPreferences pref;
 
     public localUser() {}
 
     @JsonIgnore
-    public localUser(String email, String name, int rating, String status, String uid, Context context) {
+    public localUser(String email, String name, int rating, String status, String uid, Context context, String customerId) {
         this.email = email;
         this.name = name;
         this.rating = rating;
         this.status = status;
         this.uid = uid;
+        this.customerId = customerId;
         pref = context.getSharedPreferences(MY_PREFS_NAME, 0);
     }
 
@@ -45,6 +48,7 @@ public class localUser {
         edit.putInt("Rating", rating);
         edit.putString("Status", status);
         edit.putString("uid", uid);
+        edit.putString("customerId", customerId);
         edit.commit();
     }
 
@@ -85,6 +89,8 @@ public class localUser {
     public String getUid() {
         return (uid == null ? pref.getString("uid", ""):uid);
     }
+
+    public String getCustomerId () {return (customerId == null ? pref.getString("customerId", ""):customerId);}
 
     @JsonIgnore
     public void setPref(Context context) {

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.stripe.model.Customer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -89,6 +90,9 @@ public class SignupActivity extends AppCompatActivity {
                 // of orders, N for neutral (doing neither)
                 userData.put("status", "N");
                 userData.put("uid", stringObjectMap.get("uid").toString());
+                Customer customer = new Customer();
+                customer.setEmail(email);
+                userData.put("customerId", customer.getId());
                 firebaseRef.child("users").child(stringObjectMap.get("uid").toString()).setValue(userData);
                 Intent intent = new Intent(getBaseContext(), LoginActivityMain.class);
                 startActivity(intent);
