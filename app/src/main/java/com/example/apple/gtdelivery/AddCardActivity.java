@@ -2,6 +2,7 @@ package com.example.apple.gtdelivery;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,6 +19,9 @@ import com.stripe.exception.AuthenticationException;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import at.markushi.ui.CircleButton;
 
 public class AddCardActivity extends Activity {
@@ -30,6 +34,10 @@ public class AddCardActivity extends Activity {
     private Firebase firebaseRef;
     private String email;
     private String customerId;
+    private String TAG = "AddCardActivity";
+    private double ourFee;
+    private double total;
+    private double delivererFee;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +68,19 @@ public class AddCardActivity extends Activity {
                             card,
                             TEST_PUBLISHABLE_KEY,
                             new TokenCallback() {
-                                public void onSuccess(Token token) {
+                                public void onSuccess(final Token token) {
                                     try{
-                                        Customer customer = Customer.retrieve(getCustomerId());
-                                        customer.createCard(token.toString());
-                                        // need to update customer in database
+//                                        com.stripe.Stripe.apiKey = TEST_PUBLISHABLE_KEY;
+//                                        Map<String, Object> customerParams = new HashMap<String, Object>();
+//                                        customerParams.put("description", getEmail());
+//                                        customerParams.put("card", token.getId());
+                                        getDetails();
+                                        Thread t = new Thread() {
+                                          public void run() {
+                                              chargeClient(token);
+                                          }
+                                        };
+                                        t.start();
                                     } catch (Exception e) {
                                         handleError(e.getMessage());
                                     }
@@ -87,21 +103,21 @@ public class AddCardActivity extends Activity {
         );
 
     }
-    private String getCustomerId() {
-        String current_uid = firebaseRef.getAuth().getUid();
-        Firebase newRef = new Firebase("https://gtfood.firebaseio.com/users/" + current_uid);
-        newRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                customerId = dataSnapshot.getValue(localUser.class).getCustomerId();
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-        return customerId;
+    private void chargeClient(Token token) {
+        com.stripe.Stripe.apiKey = TEST_PUBLISHABLE_KEY;
+        Map<String, Object> chargeParams = new HashMap<String, Object>();
+        chargeParams.put("description", getEmail());
+        chargeParams.put("card", token.getId());
+        chargeParams.put("amount", (int) (total * 100));
+        chargeParams.put("currency", "USD");
+        Log.d(TAG, "Charge Params put");
+        try {
+            Charge.create(chargeParams);
+            Log.d(TAG, "Charge Created");
+            // NOW CREATE INTENT
+        } catch (Exception e) {
+            Log.e(TAG, e.getLocalizedMessage());
+        }
     }
     private String getEmail() {
         String current_uid = firebaseRef.getAuth().getUid();
@@ -118,6 +134,23 @@ public class AddCardActivity extends Activity {
             }
         });
         return email;
+    }
+    private void getDetails() {
+        String current_uid = firebaseRef.getAuth().getUid();
+        Firebase newRef = new Firebase("https://gtfood.firebaseio.com/status_table/" + current_uid);
+        newRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                total = dataSnapshot.getValue(Order.class).getTotal();
+                ourFee = dataSnapshot.getValue(Order.class).getOurFee();
+                delivererFee = dataSnapshot.getValue(Order.class).getDeliveryFee();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
     private void handleError(String text) {
         Toast.makeText(AddCardActivity.this, text, Toast.LENGTH_SHORT).show();

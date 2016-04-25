@@ -58,7 +58,7 @@ public class OrderSearchActivity extends Activity {
                 System.out.println(dataSnapshot.getValue());
                 if (status.equals("A")) {
                     isAccepted = true;
-                    Intent intent = new Intent(OrderSearchActivity.this, Delivering.class);
+                    Intent intent = new Intent(OrderSearchActivity.this, AddCardActivity.class);
                     startActivity(intent);
                 } else {
                     isCancelled = true;

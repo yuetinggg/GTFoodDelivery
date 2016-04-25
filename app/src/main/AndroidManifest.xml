@@ -41,9 +41,6 @@
             android:name=".ConfirmOrder"
             android:label="@string/title_activity_confirm_order" />
         <activity
-            android:name=".Delivering"
-            android:label="@string/title_activity_delivering" />
-        <activity
             android:name=".OrderChooserActivity"
             android:label="@string/title_activity_order_chooser" />
         <activity

@@ -23,4 +23,5 @@
     <string name="title_activity_delivering">Delivering</string>
     <string name="title_activity_order_chooser">OrderChooserActivity</string>
     <string name="title_activity_signup">SignupActivity</string>
+    <string name="stripe_test_api_key">pk_test_0KPlH4Hw2FUzR7bakDWXZqr1</string>
 </resources>

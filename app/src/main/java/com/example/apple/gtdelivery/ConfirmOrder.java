@@ -36,7 +36,7 @@ public class ConfirmOrder extends Activity {
     ArrayList<MenuItem> order;
     ListView menu;
     Double total;
-    Double deliveryFee = 1.00;
+    Double deliveryFee = 2.99;
     TextView totalView;
     TextView deliveryFeeView;
     DecimalFormat df;
@@ -44,6 +44,7 @@ public class ConfirmOrder extends Activity {
     CircleButton done;
     Context current;
     localUser user;
+    Double ourFee = 0.0;
 
     Firebase firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
 
@@ -122,6 +123,7 @@ public class ConfirmOrder extends Activity {
                     map.put("foodItems", foodItems);
                     map.put("restaurant", restaurant);
                     map.put("deliveryFee", deliveryFee);
+                    map.put("ourFee", ourFee);
                     map.put("total", total);
                     map.put("deliveryLocation", location.getText().toString());
                     map.put("status", "O");
@@ -139,7 +141,8 @@ public class ConfirmOrder extends Activity {
         for(MenuItem i : order) {
             total += Double.parseDouble(i.getPrice().substring(1,i.getPrice().length()-1));
         }
-        total *= 1.08;
+        ourFee = 0.1*total;
+        total += ourFee;
         total += deliveryFee;
     }
 

@@ -20,12 +20,13 @@ public class Order {
     private String ordererName;
     private int ordererRating;
     private String uid;
+    private double ourFee;
 
     //Needed for JSON deserialization when retrieving from Firebase
     public Order() {}
 
     @JsonIgnore
-    public Order(double deliveryFee, ArrayList<String> foodItems, String deliveryLocation, String restaurant, String status, double total, String email, String ordererName, int ordererRating) {
+    public Order(double deliveryFee, ArrayList<String> foodItems, String deliveryLocation, String restaurant, String status, double total, String email, String ordererName, int ordererRating, double ourFee) {
         this.deliveryFee = deliveryFee;
         this.foodItems = foodItems;
         this.deliveryLocation = deliveryLocation;
@@ -35,6 +36,7 @@ public class Order {
         this.email = email;
         this.ordererName = ordererName;
         this.ordererRating = ordererRating;
+        this.ourFee = ourFee;
     }
 
     public String getOrdererName() {
@@ -80,4 +82,5 @@ public class Order {
     public String getUid() {
         return uid;
     }
+    public double getOurFee () {return ourFee;}
 }

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.stripe.android.Stripe;
 import com.stripe.model.Customer;
 
 import java.util.HashMap;
@@ -32,12 +33,13 @@ public class SignupActivity extends AppCompatActivity {
     @Bind(R.id.btn_signup) Button _signupButton;
     @Bind(R.id.link_login) TextView _loginLink;
 
+    public String STRIPE_TEST_API_KEY;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
-
+        STRIPE_TEST_API_KEY = getResources().getString(R.string.stripe_test_api_key);
         //Setting up the firebase connection
         firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
 
@@ -90,9 +92,6 @@ public class SignupActivity extends AppCompatActivity {
                 // of orders, N for neutral (doing neither)
                 userData.put("status", "N");
                 userData.put("uid", stringObjectMap.get("uid").toString());
-                Customer customer = new Customer();
-                customer.setEmail(email);
-                userData.put("customerId", customer.getId());
                 firebaseRef.child("users").child(stringObjectMap.get("uid").toString()).setValue(userData);
                 Intent intent = new Intent(getBaseContext(), LoginActivityMain.class);
                 startActivity(intent);

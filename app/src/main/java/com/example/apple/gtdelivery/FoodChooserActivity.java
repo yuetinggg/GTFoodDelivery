@@ -168,29 +168,6 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
             String message = items.get(position).getName() + " added to order!";
             Toast.makeText(current, message, Toast.LENGTH_SHORT).show();
 
-            /*
-            AlertDialog.Builder alert = new AlertDialog.Builder(FoodChooserActivity.this);
-            alert.setTitle("Confirm Order");
-            final int pos = position;
-            alert.setMessage(message).setCancelable(false).
-                    setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    }).
-                    setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-//                            System.out.println("UID: " + firebaseRef.getAuth().getUid());
-                            Firebase userRef = firebaseRef.child("status_table").child(firebaseRef.getAuth().getUid());
-                            Map<String, Object> map = new HashMap<String, Object>();
-                            map.put("Food Item", items.get(pos).getName());
-                            map.put("Restaurant", items.get(pos).getrName());
-                            map.put("Price", items.get(pos).getPrice());
-                            userRef.updateChildren(map);
-                        }
-                    }).show();*/
         }
     }
 }
