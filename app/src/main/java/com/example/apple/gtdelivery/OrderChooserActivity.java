@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Activity;
+import android.text.Html;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -20,7 +21,9 @@ import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,10 +42,10 @@ public class OrderChooserActivity extends Activity {
 
         //Setting up Firebase context
         Firebase.setAndroidContext(this);
-        firebaseref = new Firebase("https://gtfood.firebaseio.com/");
+        firebaseref = new Firebase(Constants.BASE_URL);
         Firebase statusTableRef = firebaseref.child("status_table");
 
-        Query orderQuery = statusTableRef.orderByChild("status").equalTo("O");
+        Query orderQuery = statusTableRef.orderByChild("status").equalTo(Constants.ORDER_REQUESTED);
 
         //Setting up current available orders via querying Firebase
         //Current available orders are not sorted at all, ie. the deliverer has to go
@@ -86,10 +89,17 @@ public class OrderChooserActivity extends Activity {
             }
         });
 
-        dictionary.addStringField(R.id.deliveryFee, new StringExtractor<Order>() {
+        dictionary.addStringField(R.id.location, new StringExtractor<Order>() {
             @Override
             public String getStringValue(Order order, int i) {
-                return "$" + order.getDeliveryFee() + "";
+                return order.getDeliveryLocation();
+            }
+        });
+
+        dictionary.addStringField(R.id.restaurant, new StringExtractor<Order>() {
+            @Override
+            public String getStringValue(Order order, int i) {
+                return order.getRestaurant();
             }
         });
 
@@ -97,7 +107,7 @@ public class OrderChooserActivity extends Activity {
 
         //Setting the listview adapter
         orders.setAdapter(adapter);
-        orders.setOnItemClickListener(new OrderOnItemClickListener(orders));
+        orders.setOnItemClickListener(new OrderOnItemClickListener(availableOrders));
     }
 
     private class OrderOnItemClickListener implements AdapterView.OnItemClickListener {
@@ -110,8 +120,25 @@ public class OrderChooserActivity extends Activity {
             AlertDialog.Builder alert = new AlertDialog.Builder(OrderChooserActivity.this);
             alert.setTitle("Accept Order");
             Order order = orders.get(pos);
-            String message = "Accept delivery to " + order.getDeliveryLocation() + " for " + order.getOrdererName()
-                    + " from " + order.getRestaurant();
+            String order_items = "";
+            for (int i = 0; i < order.getFoodItems().size(); i++) {
+                if (i < order.getFoodItems().size() - 1) {
+                    order_items += (order.getFoodItems().get(i) + ", ");
+                } else {
+                    order_items += (order.getFoodItems());
+                }
+            }
+//            String message = "Accept delivery to get " + order_items + " from " +
+//                    order.getRestaurant() + " for " + order.getOrdererName()
+//                    + " and deliver to " +  order.getDeliveryLocation();
+//                    ;
+            DecimalFormat df = new DecimalFormat("#.00");
+            String message = "Name: " + order.getOrdererName() + "\n" +
+                             "Order Items: " + order_items + "\n" +
+                             "Restaurant: " + order.getRestaurant() + "\n" +
+                             "Deliver to: " + order.getDeliveryLocation() + "\n" +
+                             "Your fee: $" + df.format(order.getDeliveryFee()) + "\n" +
+                             "Orderer's Total: $" + df.format(order.getTotal() - order.getOurFee());
             alert.setMessage(message).setCancelable(true).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -121,6 +148,9 @@ public class OrderChooserActivity extends Activity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Firebase order = firebaseref.child("status_table").child(orders.get(pos).getUid());
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("status", Constants.ORDER_ACCEPTED);
+                    order.updateChildren(map);
                 }
             }).show();
         }

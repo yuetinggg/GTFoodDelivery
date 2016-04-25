@@ -16,12 +16,11 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_order_or_deliver">OrderOrDeliver</string>
-    <string name="title_activity_order_search">OrderSearchActivity</string>
-    <string name="title_activity_location_selector">LocationSelector</string>
-    <string name="title_activity_confirm_order">ConfirmOrder</string>
-    <string name="title_activity_delivering">Delivering</string>
-    <string name="title_activity_order_chooser">OrderChooserActivity</string>
-    <string name="title_activity_signup">SignupActivity</string>
+    <string name="title_activity_order_or_deliver">Order or Deliver</string>
+    <string name="title_activity_order_search">Searching for Order</string>
+    <string name="title_activity_location_selector">Select Location</string>
+    <string name="title_activity_confirm_order">Confirm Order</string>
+    <string name="title_activity_order_chooser">Choose Order</string>
+    <string name="title_activity_signup">Sign Up</string>
     <string name="stripe_test_api_key">pk_test_0KPlH4Hw2FUzR7bakDWXZqr1</string>
 </resources>
