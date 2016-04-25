@@ -38,7 +38,7 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
     ArrayList<RoundedImageView> iconViews;
     ListView menu;
     List<List<MenuItem>> allMenus;
-    Firebase firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
+    Firebase firebaseRef;
     CircleButton button;
 
     //Order information
@@ -50,6 +50,8 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
         setContentView(R.layout.activity_food_chooser);
         current = this;
         Firebase.setAndroidContext(this);
+
+        firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
 
         //Hardcoding menus for now
         //Chick-fil-a menu

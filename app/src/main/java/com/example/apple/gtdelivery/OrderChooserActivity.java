@@ -125,7 +125,7 @@ public class OrderChooserActivity extends Activity {
                 if (i < order.getFoodItems().size() - 1) {
                     order_items += (order.getFoodItems().get(i) + ", ");
                 } else {
-                    order_items += (order.getFoodItems());
+                    order_items += (order.getFoodItems().get(i));
                 }
             }
 //            String message = "Accept delivery to get " + order_items + " from " +
