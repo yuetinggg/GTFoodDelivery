@@ -1,7 +1,13 @@
 package com.example.apple.gtdelivery;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ami.fundapter.BindDictionary;
 import com.ami.fundapter.FunDapter;
@@ -13,23 +19,30 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class OrderChooserActivity extends Activity {
     Firebase firebaseref;
     ArrayList<Order> availableOrders;
+    ListView orders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_chooser);
 
+        //Setting up the listview
+        orders = (ListView) findViewById(R.id.orderList);
+
         //Setting up Firebase context
         Firebase.setAndroidContext(this);
         firebaseref = new Firebase("https://gtfood.firebaseio.com/");
         Firebase statusTableRef = firebaseref.child("status_table");
 
-        Query orderQuery = statusTableRef.orderByChild("Status").equalTo("O");
+        Query orderQuery = statusTableRef.orderByChild("status").equalTo("O");
 
         //Setting up current available orders via querying Firebase
         //Current available orders are not sorted at all, ie. the deliverer has to go
@@ -39,10 +52,13 @@ public class OrderChooserActivity extends Activity {
         orderQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot child: dataSnapshot.getChildren()) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    System.out.println(child);
                     Order order = child.getValue(Order.class);
+                    order.setUid(child.getKey());
                     availableOrders.add(order);
                 }
+                setUpList();
             }
 
             @Override
@@ -51,6 +67,9 @@ public class OrderChooserActivity extends Activity {
             }
         });
 
+    }
+
+    private void setUpList() {
         //Making adapter for Order class using Fundapter
         BindDictionary<Order> dictionary = new BindDictionary<Order>();
         dictionary.addStringField(R.id.ordererName, new StringExtractor<Order>() {
@@ -74,8 +93,37 @@ public class OrderChooserActivity extends Activity {
             }
         });
 
-        FunDapter<Order> adapter = new FunDapter<>(getBaseContext(), availableOrders, R.layout.available_orders_list_item, dictionary);
+        FunDapter<Order> adapter = new FunDapter<>(this, availableOrders, R.layout.available_orders_list_item, dictionary);
 
+        //Setting the listview adapter
+        orders.setAdapter(adapter);
+        orders.setOnItemClickListener(new OrderOnItemClickListener(orders));
+    }
+
+    private class OrderOnItemClickListener implements AdapterView.OnItemClickListener {
+        private List<Order> orders;
+        public OrderOnItemClickListener(List<Order> orders) {
+            this.orders = orders;
+        }
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            final int pos = position;
+            AlertDialog.Builder alert = new AlertDialog.Builder(OrderChooserActivity.this);
+            alert.setTitle("Accept Order");
+            Order order = orders.get(pos);
+            String message = "Accept delivery to " + order.getDeliveryLocation() + " for " + order.getOrdererName()
+                    + " from " + order.getRestaurant();
+            alert.setMessage(message).setCancelable(true).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Firebase order = firebaseref.child("status_table").child(orders.get(pos).getUid());
+                }
+            }).show();
+        }
     }
 
 }

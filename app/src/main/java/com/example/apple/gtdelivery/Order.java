@@ -19,6 +19,7 @@ public class Order {
     private String email;
     private String ordererName;
     private int ordererRating;
+    private String uid;
 
     //Needed for JSON deserialization when retrieving from Firebase
     public Order() {}
@@ -69,4 +70,14 @@ public class Order {
     }
 
     public String getStatus() { return status; }
+
+    @JsonIgnore
+    public void setUid(String string) {
+        uid = string;
+    }
+
+    @JsonIgnore
+    public String getUid() {
+        return uid;
+    }
 }
