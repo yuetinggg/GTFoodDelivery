@@ -2,6 +2,7 @@ package com.example.apple.gtdelivery;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.text.Html;
@@ -119,7 +120,7 @@ public class OrderChooserActivity extends Activity {
             final int pos = position;
             AlertDialog.Builder alert = new AlertDialog.Builder(OrderChooserActivity.this);
             alert.setTitle("Accept Order");
-            Order order = orders.get(pos);
+            final Order order = orders.get(pos);
             String order_items = "";
             for (int i = 0; i < order.getFoodItems().size(); i++) {
                 if (i < order.getFoodItems().size() - 1) {
@@ -128,12 +129,9 @@ public class OrderChooserActivity extends Activity {
                     order_items += (order.getFoodItems().get(i));
                 }
             }
-//            String message = "Accept delivery to get " + order_items + " from " +
-//                    order.getRestaurant() + " for " + order.getOrdererName()
-//                    + " and deliver to " +  order.getDeliveryLocation();
-//                    ;
+
             DecimalFormat df = new DecimalFormat("#.00");
-            String message = "Name: " + order.getOrdererName() + "\n" +
+            final String message = "Name: " + order.getOrdererName() + "\n" +
                              "Order Items: " + order_items + "\n" +
                              "Restaurant: " + order.getRestaurant() + "\n" +
                              "Deliver to: " + order.getDeliveryLocation() + "\n" +
@@ -147,10 +145,14 @@ public class OrderChooserActivity extends Activity {
             }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Firebase order = firebaseref.child("status_table").child(orders.get(pos).getUid());
+                    Firebase o = firebaseref.child("status_table").child(orders.get(pos).getUid());
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put("status", Constants.ORDER_ACCEPTED);
-                    order.updateChildren(map);
+                    o.updateChildren(map);
+                    Intent i = new Intent(OrderChooserActivity.this, orderInProgressActivity.class);
+
+                    i.putExtra("acceptedOrder", message);
+                    startActivity(i);
                 }
             }).show();
         }

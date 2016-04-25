@@ -46,7 +46,10 @@
         <activity
             android:name=".SignupActivity"
             android:label="@string/title_activity_signup" />
-        <activity android:name=".AddCardActivity"></activity>
+        <activity android:name=".AddCardActivity" />
+        <activity
+            android:name=".orderInProgressActivity"
+            android:label="@string/title_activity_order_in_progress"></activity>
     </application>
 
 </manifest>
