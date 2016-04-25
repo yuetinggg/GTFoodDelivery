@@ -36,7 +36,7 @@ public class ConfirmOrder extends Activity {
     ArrayList<MenuItem> order;
     ListView menu;
     Double total;
-    Double deliveryFee = 2.99;
+    Double deliveryFee = 2.00;
     TextView totalView;
     TextView deliveryFeeView;
     DecimalFormat df;
@@ -126,7 +126,7 @@ public class ConfirmOrder extends Activity {
                     map.put("ourFee", ourFee);
                     map.put("total", total);
                     map.put("deliveryLocation", location.getText().toString());
-                    map.put("status", "O");
+                    map.put("status", Constants.ORDER_REQUESTED);
                     userRef.updateChildren(map);
                     Intent intent = new Intent(ConfirmOrder.this, OrderSearchActivity.class);
                     startActivity(intent);
