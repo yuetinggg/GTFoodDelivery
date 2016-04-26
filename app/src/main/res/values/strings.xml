@@ -24,4 +24,7 @@
     <string name="title_activity_signup">Sign Up</string>
     <string name="stripe_test_api_key">pk_test_0KPlH4Hw2FUzR7bakDWXZqr1</string>
     <string name="title_activity_order_in_progress">orderInProgressActivity</string>
+    <string name="orderInProgress">ORDER IN PROGRESS</string>
+    <string name="title_activity_dummy_delivered_activty">dummyDeliveredActivty</string>
+    <string name="title_activity_rating_user">ratingUserActivity</string>
 </resources>

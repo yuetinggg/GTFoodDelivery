@@ -152,6 +152,7 @@ public class OrderChooserActivity extends Activity {
                     Intent i = new Intent(OrderChooserActivity.this, orderInProgressActivity.class);
 
                     i.putExtra("acceptedOrder", message);
+                    i.putExtra("ordererUID", order.getUid());
                     startActivity(i);
                 }
             }).show();
