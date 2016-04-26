@@ -54,6 +54,7 @@ public class AddCardActivity extends Activity {
     private RelativeLayout layout;
     private String custEmail;
     private boolean fromConfirmation = false;
+    private boolean fromOrderChooser = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +68,15 @@ public class AddCardActivity extends Activity {
         final SharedPreferences.Editor edit = prefs.edit();
 
         //If previous screen was confirm order, retrieve the order information
-        if (getIntent().getStringExtra("activity") != null) {
-            fromConfirmation = true;
-            Bundle extras = getIntent().getExtras();
-            order = (ArrayList<MenuItem>) extras.getSerializable("ORDER_INFORMATION");
+        String activity = getIntent().getStringExtra("activity");
+        if (activity != null) {
+            if (activity.equals("confirmOrder")) {
+                fromConfirmation = true;
+                Bundle extras = getIntent().getExtras();
+                order = (ArrayList<MenuItem>) extras.getSerializable("ORDER_INFORMATION");
+            } else if (activity.equals("orderChooser")){
+                fromOrderChooser = true;
+            }
         }
 
         try {
@@ -170,6 +176,9 @@ public class AddCardActivity extends Activity {
                                               if(fromConfirmation) {
                                                   Intent intent = new Intent(AddCardActivity.this, ConfirmOrder.class);
                                                   intent.putExtra("ORDER_INFORMATION", order);
+                                                  startActivity(intent);
+                                              } else if (fromOrderChooser) {
+                                                  Intent intent = new Intent(AddCardActivity.this, OrderChooserActivity.class);
                                                   startActivity(intent);
                                               } else {
                                                   Intent intent = new Intent(AddCardActivity.this, OrderOrDeliver.class);

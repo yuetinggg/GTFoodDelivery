@@ -153,7 +153,7 @@ public class OrderSearchActivity extends Activity {
 
                                                 }
                                             }).create().start();
-                                    
+
                                     Intent intent = new Intent(OrderSearchActivity.this, FoodChooserActivity.class);
                                     startActivity(intent);
                                 }
