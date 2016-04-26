@@ -21,6 +21,7 @@ public class Order {
     private int ordererRating;
     private String uid;
     private double ourFee;
+    private String delivererUID;
 
     //Needed for JSON deserialization when retrieving from Firebase
     public Order() {}
@@ -82,5 +83,10 @@ public class Order {
     public String getUid() {
         return uid;
     }
+
     public double getOurFee () {return ourFee;}
+
+    public String getDelivererUID() {
+        return delivererUID;
+    }
 }

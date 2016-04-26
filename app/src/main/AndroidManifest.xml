@@ -55,7 +55,10 @@
             android:label="@string/title_activity_dummy_delivered_activty" />
         <activity
             android:name=".ratingUserActivity"
-            android:label="@string/title_activity_rating_user"></activity>
+            android:label="@string/title_activity_rating_user" />
+        <activity
+            android:name=".foundWaitingActivity"
+            android:label="@string/title_activity_found_waiting"></activity>
     </application>
 
 </manifest>

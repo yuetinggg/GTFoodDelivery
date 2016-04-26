@@ -94,6 +94,8 @@ public class LoginActivityMain extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         localUser user = dataSnapshot.getValue(localUser.class);
+                        System.out.println(user.getEmail());
+                        System.out.println(user.getCustomer_stripe_id());
                         user.setPref(getBaseContext());
                         user.logUserIn();
                     }

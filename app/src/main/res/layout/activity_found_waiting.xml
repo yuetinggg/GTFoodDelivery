@@ -17,10 +17,10 @@
         android:orientation="vertical">
 
         <com.mikhaellopez.circularfillableloaders.CircularFillableLoaders
-            android:id="@+id/lalala"
+            android:id="@+id/foundWaiting"
             android:layout_width="250dp"
             android:layout_height="250dp"
-            android:src="@drawable/dummy_delivereed"
+            android:src="@drawable/found_waiting"
             android:scaleType="fitXY"
             android:scaleX="1"
             android:scaleY="1"
@@ -32,11 +32,11 @@
             android:layout_gravity="center_vertical|center_horizontal" />
 
         <Button
-            android:id="@+id/doneButton"
+            android:id="@+id/verifyDeliveryButton"
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/done"
+            android:background="@drawable/verify_delivery"
             android:layout_gravity="center_vertical|center_horizontal" />
 
     </LinearLayout>

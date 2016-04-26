@@ -3,8 +3,10 @@ package com.example.apple.gtdelivery;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,11 +34,15 @@ public class OrderChooserActivity extends Activity {
     Firebase firebaseref;
     ArrayList<Order> availableOrders;
     ListView orders;
+    //setting up shared preferences
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    final SharedPreferences.Editor edit = prefs.edit();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_chooser);
+
 
         //Setting up the listview
         orders = (ListView) findViewById(R.id.orderList);
@@ -146,11 +152,12 @@ public class OrderChooserActivity extends Activity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Firebase o = firebaseref.child("status_table").child(orders.get(pos).getUid());
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put("status", Constants.ORDER_ACCEPTED);
-                    o.updateChildren(map);
+                    o.child("status").setValue(Constants.ORDER_ACCEPTED);
+                    o.child("delivererUID").setValue(firebaseref.getAuth().getUid());
+                    firebaseref.child("users").child(firebaseref.getAuth().getUid()).child("status").setValue("D");
+                    edit.putString("Status", "D");
+                    edit.commit();
                     Intent i = new Intent(OrderChooserActivity.this, orderInProgressActivity.class);
-
                     i.putExtra("acceptedOrder", message);
                     i.putExtra("ordererUID", order.getUid());
                     startActivity(i);

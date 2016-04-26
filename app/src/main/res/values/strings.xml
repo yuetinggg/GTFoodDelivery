@@ -27,4 +27,5 @@
     <string name="orderInProgress">ORDER IN PROGRESS</string>
     <string name="title_activity_dummy_delivered_activty">dummyDeliveredActivty</string>
     <string name="title_activity_rating_user">ratingUserActivity</string>
+    <string name="title_activity_found_waiting">foundWaitingActivity</string>
 </resources>

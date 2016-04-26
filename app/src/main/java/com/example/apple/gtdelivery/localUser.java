@@ -2,6 +2,7 @@ package com.example.apple.gtdelivery;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -17,24 +18,27 @@ public class localUser {
     private int rating;
     private String status;
     private String uid;
+    private int num_ratings;
     public static final String MY_PREFS_NAME = "UserPrefs";
+    private String customer_stripe_id;
     SharedPreferences pref;
 
     public localUser() {}
 
     @JsonIgnore
-    public localUser(String email, String name, int rating, String status, String uid, Context context) {
+    public localUser(String email, String name, int rating, String status, String uid, Context context, String customer_stripe_id) {
         this.email = email;
         this.name = name;
         this.rating = rating;
         this.status = status;
         this.uid = uid;
+        this.customer_stripe_id = customer_stripe_id;
         pref = context.getSharedPreferences(MY_PREFS_NAME, 0);
     }
 
     @JsonIgnore
     public localUser(Context context) {
-        pref = context.getSharedPreferences(MY_PREFS_NAME, 0);
+        pref = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @JsonIgnore
@@ -46,7 +50,11 @@ public class localUser {
         edit.putInt("Rating", rating);
         edit.putString("Status", status);
         edit.putString("uid", uid);
+        edit.putInt("num_ratings", num_ratings);
+        edit.putString("customer_stripe_id", customer_stripe_id);
+        System.out.println(customer_stripe_id + "1");
         edit.commit();
+        System.out.println(pref.getString("customer_stripe_id", "") + "SHIT");
     }
 
     @JsonIgnore
@@ -87,8 +95,16 @@ public class localUser {
         return (uid == null ? pref.getString("uid", ""):uid);
     }
 
+    public int getNum_ratings() {
+        return num_ratings;
+    }
+
+    public String getCustomer_stripe_id() {
+        return customer_stripe_id;
+    }
+
     @JsonIgnore
     public void setPref(Context context) {
-        pref = context.getSharedPreferences(MY_PREFS_NAME, 0);
+        pref = PreferenceManager.getDefaultSharedPreferences(context);
     }
 }

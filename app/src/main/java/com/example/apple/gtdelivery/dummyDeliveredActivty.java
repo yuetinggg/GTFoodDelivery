@@ -19,7 +19,8 @@ public class dummyDeliveredActivty extends Activity {
         setContentView(R.layout.activity_dummy_delivered_activty);
 
         //Setting up loading widget
-        loader = (CircularFillableLoaders) findViewById(R.id.circularFillableLoaders);
+        loader = (CircularFillableLoaders) findViewById(R.id.lalala);
+
         final String oUID = getIntent().getStringExtra("ordererUID");
 
         Button done = (Button) findViewById(R.id.doneButton);

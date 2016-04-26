@@ -8,12 +8,14 @@ import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.arasthel.asyncjob.AsyncJob;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -21,6 +23,13 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
 import com.squareup.picasso.Picasso;
+import com.stripe.exception.APIConnectionException;
+import com.stripe.exception.APIException;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.CardException;
+import com.stripe.exception.InvalidRequestException;
+import com.stripe.model.Charge;
+import com.stripe.model.Refund;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +39,8 @@ public class OrderSearchActivity extends Activity {
     Button cancelButton;
     Boolean isCancelled = false;
     Boolean isAccepted = false;
+    String chargeID;
+    private String TAG = "OrderSearchActivity";
 
     Firebase firebaseRef;
     Firebase userRef;
@@ -38,6 +49,9 @@ public class OrderSearchActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_search);
+
+        //get charge id
+        chargeID = getIntent().getStringExtra("chargeID");
 
         //Setup Firebase
         Firebase.setAndroidContext(this);
@@ -58,11 +72,8 @@ public class OrderSearchActivity extends Activity {
                 System.out.println(dataSnapshot.getValue());
                 if (status.equals("A")) {
                     isAccepted = true;
-                    Intent intent = new Intent(OrderSearchActivity.this, AddCardActivity.class);
-                    startActivity(intent);
-                } else {
-                    isCancelled = true;
-                    Intent intent = new Intent(OrderSearchActivity.this, FoodChooserActivity.class);
+                    Intent intent = new Intent(OrderSearchActivity.this, foundWaitingActivity.class);
+                    //Intent intent = new Intent(OrderSearchActivity.this, AddCardActivity.class);
                     startActivity(intent);
                 }
             }
@@ -109,6 +120,40 @@ public class OrderSearchActivity extends Activity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     userRef.removeValue();
+
+                                    new AsyncJob.AsyncJobBuilder<Boolean>()
+                                            .doInBackground(new AsyncJob.AsyncAction<Boolean>() {
+                                                @Override
+                                                public Boolean doAsync() {
+                                                    try {
+                                                        Map<String, Object> refund = new HashMap<String, Object>();
+                                                        refund.put("charge", chargeID);
+                                                        Refund.create(refund);
+
+                                                    } catch (AuthenticationException e) {
+                                                        e.printStackTrace();
+                                                    } catch (InvalidRequestException e) {
+                                                        e.printStackTrace();
+                                                    } catch (APIConnectionException e) {
+                                                        e.printStackTrace();
+                                                    } catch (CardException e) {
+                                                        e.printStackTrace();
+                                                    } catch (APIException e) {
+                                                        e.printStackTrace();
+                                                    } catch (Exception e) {
+                                                        Log.e(TAG, e.getMessage());
+                                                    }
+                                                    return true;
+                                                }
+                                            })
+                                            .doWhenFinished(new AsyncJob.AsyncResultAction<Boolean>() {
+                                                @Override
+                                                public void onResult(Boolean result) {
+                                                    Toast.makeText(OrderSearchActivity.this, "You have been refunded!", Toast.LENGTH_SHORT).show();
+
+                                                }
+                                            }).create().start();
+                                    
                                     Intent intent = new Intent(OrderSearchActivity.this, FoodChooserActivity.class);
                                     startActivity(intent);
                                 }

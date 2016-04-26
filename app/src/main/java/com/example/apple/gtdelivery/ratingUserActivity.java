@@ -17,11 +17,13 @@ import com.firebase.client.ValueEventListener;
 
 import at.markushi.ui.CircleButton;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class ratingUserActivity extends Activity {
     Firebase firebaseref;
     int numRatings;
     double currentRating;
+    String toBeRatedName;
 
     @Bind(R.id.ratingBar) RatingBar rating;
     @Bind(R.id.tobeRated) TextView toBeRated;
@@ -35,6 +37,7 @@ public class ratingUserActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rating_user);
+        ButterKnife.bind(this);
 
         //getUID of this user, that's rating the other user
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -51,12 +54,13 @@ public class ratingUserActivity extends Activity {
         final Firebase usersRef = firebaseref.child("users").child(toRateUID);
 
 
-        //getting the to be rated user's rating and number of people that rated them
+        //getting the to be rated user's rating and number of people that rated them and name
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                numRatings = (int) dataSnapshot.child("num_ratings").getValue();
-                currentRating = (double) dataSnapshot.child("rating").getValue();
+                numRatings = ((Long) dataSnapshot.child("num_ratings").getValue()).intValue();
+                currentRating = ((Long) dataSnapshot.child("rating").getValue()).doubleValue();
+                toBeRatedName = (String) dataSnapshot.child("name").getValue();
             }
 
             @Override
@@ -69,6 +73,7 @@ public class ratingUserActivity extends Activity {
         Typeface normalType = Typeface.createFromAsset(getAssets(), "fonts/YanoneKaffeesatz-Regular.ttf");
         Typeface comicFont = Typeface.createFromAsset(getAssets(), "fonts/BADABB.ttf");
         toBeRated.setTypeface(comicFont);
+        toBeRated.setText(toBeRatedName);
         orderComplete.setTypeface(comicFont);
         pleaseRate.setTypeface(normalType);
 
@@ -76,11 +81,14 @@ public class ratingUserActivity extends Activity {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int setRating = rating.getNumStars();
+                double setRating = rating.getRating();
+                System.out.println(setRating);
                 double newRating = (((currentRating) * numRatings) + setRating)/(numRatings + 1);
                 usersRef.child("num_ratings").setValue(numRatings+1);
+                System.out.println(newRating);
                 usersRef.child("rating").setValue(newRating);
                 firebaseref.child("users").child(currentUID).child("status").setValue("N");
+
                 edit.putString("Status", "N");
                 edit.commit();
 

@@ -1,9 +1,14 @@
 package com.example.apple.gtdelivery;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -28,7 +33,15 @@ import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.arasthel.asyncjob.AsyncJob;
 import com.firebase.client.Firebase;
+import com.stripe.exception.APIConnectionException;
+import com.stripe.exception.APIException;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.CardException;
+import com.stripe.exception.InvalidRequestException;
+import com.stripe.model.Charge;
+import com.stripe.model.Customer;
 
 import at.markushi.ui.CircleButton;
 
@@ -45,6 +58,10 @@ public class ConfirmOrder extends Activity {
     Context current;
     localUser user;
     Double ourFee = 0.0;
+    String customer_stripe_id;
+    private String TAG = "ConfirmOrderActivity";
+    SharedPreferences prefs;
+    String chargeID;
 
     Firebase firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
 
@@ -54,6 +71,13 @@ public class ConfirmOrder extends Activity {
         setContentView(R.layout.activity_confirm_order);
         Firebase.setAndroidContext(this);
         user = new localUser(this);
+
+        //Getting shared preferences to update status
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        System.out.println(prefs.getString("Email", "") + "SHIT");
+        customer_stripe_id = prefs.getString("customer_stripe_id", "");
+        System.out.println(customer_stripe_id + "20");
+        final SharedPreferences.Editor edit = prefs.edit();
 
         //Get the order from previous activity
         Bundle extras = getIntent().getExtras();
@@ -101,6 +125,8 @@ public class ConfirmOrder extends Activity {
 
         menu.setAdapter(adapt);
 
+        System.out.println(customer_stripe_id);
+        System.out.println("HELLOOOOOOOOOOOO");
         //Setting on click listener for done button
         done = (CircleButton) findViewById(R.id.circleButton);
         done.setOnClickListener(new View.OnClickListener() {
@@ -108,8 +134,75 @@ public class ConfirmOrder extends Activity {
             public void onClick(View v) {
                 if (location.getText() == null || location.getText().toString() == "") {
                     Toast.makeText(current, "Please select delivery location.", Toast.LENGTH_LONG);
+                } else if (customer_stripe_id.equals("notSet")){
+                    AlertDialog.Builder alert = new AlertDialog.Builder(ConfirmOrder.this);
+                    alert.setTitle("No Payment Info Added");
+                    final String message = "Please add your card info to proceed with the order. Add card now?";
+                    alert.setMessage(message).setCancelable(true).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent i = new Intent(ConfirmOrder.this, AddCardActivity.class);
+                            i.putExtra("activity", "confirmOrder");
+                            i.putExtra("ORDER_INFORMATION", order);
+                            startActivity(i);
+                        }
+                    }).show();
                 } else {
+                    //charging the card
+                    new AsyncJob.AsyncJobBuilder<Boolean>()
+                            .doInBackground(new AsyncJob.AsyncAction<Boolean>() {
+                                @Override
+                                public Boolean doAsync() {
+                                    try {
+                                        com.stripe.Stripe.apiKey = Constants.STRIPE_API_TEST_SECRET_KEY;
+
+                                        //"Charging" the customer to get the card to be saved with the customer
+                                        Map<String, Object> chargeParams = new HashMap<String, Object>();
+                                        chargeParams.put("amount", ((int) (total * 100))); // amount in cents, again
+                                        chargeParams.put("currency", "usd");
+                                        chargeParams.put("customer", prefs.getString("customer_stripe_id", ""));
+
+                                        Charge object = Charge.create(chargeParams);
+                                        chargeID = object.getId();
+
+
+                                        // NOW CREATE INTENT
+                                    } catch (AuthenticationException e) {
+                                        e.printStackTrace();
+                                    } catch (InvalidRequestException e) {
+                                        e.printStackTrace();
+                                    } catch (APIConnectionException e) {
+                                        e.printStackTrace();
+                                    } catch (CardException e) {
+                                        e.printStackTrace();
+                                    } catch (APIException e) {
+                                        e.printStackTrace();
+                                    } catch (Exception e) {
+                                        Log.e(TAG, e.getMessage());
+                                    }
+                                    return true;
+                                }
+                            })
+                            .doWhenFinished(new AsyncJob.AsyncResultAction<Boolean>() {
+                                @Override
+                                public void onResult(Boolean result) {
+                                    Toast.makeText(ConfirmOrder.this, "Charged Card", Toast.LENGTH_SHORT).show();
+
+                                }
+                            }).create().start();
+
+                    edit.putString("Status", "O");
+                    edit.commit();
+
                     Firebase userRef = firebaseRef.child("status_table").child(firebaseRef.getAuth().getUid());
+                    Firebase thisUser = firebaseRef.child("users").child(firebaseRef.getAuth().getUid()).child("status");
+                    thisUser.setValue("O");
+
                     Map<String, Object> map = new HashMap<String, Object>();
                     ArrayList foodItems = new ArrayList<>();
                     for (MenuItem m : order) {
@@ -127,8 +220,10 @@ public class ConfirmOrder extends Activity {
                     map.put("total", total);
                     map.put("deliveryLocation", location.getText().toString());
                     map.put("status", Constants.ORDER_REQUESTED);
+                    map.put("delivererUID", "notSet");
                     userRef.updateChildren(map);
                     Intent intent = new Intent(ConfirmOrder.this, OrderSearchActivity.class);
+                    intent.putExtra("chargeID", chargeID);
                     startActivity(intent);
                 }
             }
