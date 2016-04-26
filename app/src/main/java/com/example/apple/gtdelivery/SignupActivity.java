@@ -40,6 +40,7 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
         STRIPE_TEST_API_KEY = getResources().getString(R.string.stripe_test_api_key);
+
         //Setting up the firebase connection
         firebaseRef = new Firebase("https://gtfood.firebaseio.com/");
 
@@ -83,7 +84,7 @@ public class SignupActivity extends AppCompatActivity {
         firebaseRef.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> stringObjectMap) {
-                firebaseRef.updateChildren(stringObjectMap);
+                //firebaseRef.updateChildren(stringObjectMap);
                 Map<String, Object> userData = new HashMap<String, Object>();
                 userData.put("email", email);
                 userData.put("name", name);
@@ -94,7 +95,7 @@ public class SignupActivity extends AppCompatActivity {
                 userData.put("customer_stripe_id", "notSet");
                 userData.put("num_ratings", 1);
                 userData.put("uid", stringObjectMap.get("uid").toString());
-                firebaseRef.child("users").child(stringObjectMap.get("uid").toString()).setValue(userData);
+                firebaseRef.child("users").child(stringObjectMap.get("uid").toString()).updateChildren(userData);
                 Intent intent = new Intent(getBaseContext(), LoginActivityMain.class);
                 startActivity(intent);
             }
@@ -128,7 +129,7 @@ public class SignupActivity extends AppCompatActivity {
     public void onSignupFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
-        _signupButton.setEnabled(true);
+        _signupButton.setEnabled(false);
     }
 
     public boolean validate() {
