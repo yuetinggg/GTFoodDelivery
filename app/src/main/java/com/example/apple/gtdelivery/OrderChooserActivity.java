@@ -68,141 +68,147 @@ public class OrderChooserActivity extends Activity {
                     order.setUid(child.getKey());
                     availableOrders.add(order);
                 }
-                setUpList();
             }
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            @Override public void onCancelled(FirebaseError firebaseError) {
 
             }
         });
 
-        //setting up dynamic list view
-        orderQuery.addChildEventListener(new ValueEventListener() {
-            Override
+                /**
+                 //adding listeners to all of them so they can be deleted
+                 // when their status changes
+                 Firebase ref = child.getRef();
+                 ref.addChildEventListener(new ValueEventListener() {
+                @Override public void onDataChange(DataSnapshot dataSnapshot) {
 
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    System.out.println(child);
-                    Order order = child.getValue(Order.class);
-                    order.setUid(child.getKey());
-                    availableOrders.add(order);
                 }
-            }
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
+                @Override public void onCancelled(FirebaseError firebaseError) {
 
-            }
-        });
+                }
+                })
+
+
+                 }
+                 setUpList();
+                 }
+
+                 @Override public void onCancelled(FirebaseError firebaseError) {
+
+                 }
+                 });**/
+
 
     }
 
-    private void setUpList() {
-        //Making adapter for Order class using Fundapter
-        BindDictionary<Order> dictionary = new BindDictionary<Order>();
-        dictionary.addStringField(R.id.ordererName, new StringExtractor<Order>() {
-            @Override
-            public String getStringValue(Order order, int i) {
-                return order.getOrdererName();
-            }
-        });
-
-        dictionary.addStringField(R.id.ordererRating, new StringExtractor<Order>() {
-            @Override
-            public String getStringValue(Order order, int i) {
-                return order.getOrdererRating() + "";
-            }
-        });
-
-        dictionary.addStringField(R.id.location, new StringExtractor<Order>() {
-            @Override
-            public String getStringValue(Order order, int i) {
-                return order.getDeliveryLocation();
-            }
-        });
-
-        dictionary.addStringField(R.id.restaurant, new StringExtractor<Order>() {
-            @Override
-            public String getStringValue(Order order, int i) {
-                return order.getRestaurant();
-            }
-        });
-
-        FunDapter<Order> adapter = new FunDapter<>(this, availableOrders, R.layout.available_orders_list_item, dictionary);
-
-        //Setting the listview adapter
-        orders.setAdapter(adapter);
-        orders.setOnItemClickListener(new OrderOnItemClickListener(availableOrders));
-    }
-
-    private class OrderOnItemClickListener implements AdapterView.OnItemClickListener {
-        private List<Order> orders;
-        public OrderOnItemClickListener(List<Order> orders) {
-            this.orders = orders;
-        }
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            if (prefs.getString("customer_stripe_id", "").equals("notSet")) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(OrderChooserActivity.this);
-                alert.setTitle("Account Details Needed");
-                final String message = "Before accepting orders, we need a way to pay you! Setup account details now and add debit card?";
-                alert.setMessage(message).setCancelable(true).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            private void setUpList() {
+                //Making adapter for Order class using Fundapter
+                BindDictionary<Order> dictionary = new BindDictionary<Order>();
+                dictionary.addStringField(R.id.ordererName, new StringExtractor<Order>() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+                    public String getStringValue(Order order, int i) {
+                        return order.getOrdererName();
                     }
-                }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                });
+
+                dictionary.addStringField(R.id.ordererRating, new StringExtractor<Order>() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(OrderChooserActivity.this, AddCardActivity.class);
-                        i.putExtra("activity", "orderChooser");
-                        startActivity(i);
+                    public String getStringValue(Order order, int i) {
+                        return order.getOrdererRating() + "";
                     }
-                }).show();
-            } else {
-                final int pos = position;
-                AlertDialog.Builder alert = new AlertDialog.Builder(OrderChooserActivity.this);
-                alert.setTitle("Accept Order");
-                final Order order = orders.get(pos);
-                String order_items = "";
-                for (int i = 0; i < order.getFoodItems().size(); i++) {
-                    if (i < order.getFoodItems().size() - 1) {
-                        order_items += (order.getFoodItems().get(i) + ", ");
+                });
+
+                dictionary.addStringField(R.id.location, new StringExtractor<Order>() {
+                    @Override
+                    public String getStringValue(Order order, int i) {
+                        return order.getDeliveryLocation();
+                    }
+                });
+
+                dictionary.addStringField(R.id.restaurant, new StringExtractor<Order>() {
+                    @Override
+                    public String getStringValue(Order order, int i) {
+                        return order.getRestaurant();
+                    }
+                });
+
+                FunDapter<Order> adapter = new FunDapter<>(this, availableOrders, R.layout.available_orders_list_item, dictionary);
+
+                //Setting the listview adapter
+                orders.setAdapter(adapter);
+                orders.setOnItemClickListener(new OrderOnItemClickListener(availableOrders));
+            }
+
+            private class OrderOnItemClickListener implements AdapterView.OnItemClickListener {
+                private List<Order> orders;
+
+                public OrderOnItemClickListener(List<Order> orders) {
+                    this.orders = orders;
+                }
+
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    if (prefs.getString("customer_stripe_id", "").equals("notSet")) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(OrderChooserActivity.this);
+                        alert.setTitle("Account Details Needed");
+                        final String message = "Before accepting orders, we need a way to pay you! Setup account details now and add debit card?";
+                        alert.setMessage(message).setCancelable(true).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent i = new Intent(OrderChooserActivity.this, AddCardActivity.class);
+                                i.putExtra("activity", "orderChooser");
+                                startActivity(i);
+                            }
+                        }).show();
                     } else {
-                        order_items += (order.getFoodItems().get(i));
+                        final int pos = position;
+                        AlertDialog.Builder alert = new AlertDialog.Builder(OrderChooserActivity.this);
+                        alert.setTitle("Accept Order");
+                        final Order order = orders.get(pos);
+                        String order_items = "";
+                        for (int i = 0; i < order.getFoodItems().size(); i++) {
+                            if (i < order.getFoodItems().size() - 1) {
+                                order_items += (order.getFoodItems().get(i) + ", ");
+                            } else {
+                                order_items += (order.getFoodItems().get(i));
+                            }
+                        }
+
+                        DecimalFormat df = new DecimalFormat("#.00");
+                        final String message = "Name: " + order.getOrdererName() + "\n" +
+                                "Order Items: " + order_items + "\n" +
+                                "Restaurant: " + order.getRestaurant() + "\n" +
+                                "Deliver to: " + order.getDeliveryLocation() + "\n" +
+                                "Your fee: $" + df.format(order.getDeliveryFee()) + "\n" +
+                                "Orderer's Total: $" + df.format(order.getTotal() - order.getOurFee());
+                        alert.setMessage(message).setCancelable(true).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Firebase o = firebaseref.child("status_table").child(orders.get(pos).getUid());
+                                o.child("status").setValue(Constants.ORDER_ACCEPTED);
+                                o.child("delivererUID").setValue(firebaseref.getAuth().getUid());
+                                firebaseref.child("users").child(firebaseref.getAuth().getUid()).child("status").setValue("D");
+                                edit.putString("Status", "D");
+                                edit.commit();
+                                Intent i = new Intent(OrderChooserActivity.this, orderInProgressActivity.class);
+                                i.putExtra("acceptedOrder", message);
+                                i.putExtra("ordererUID", order.getUid());
+                                startActivity(i);
+                            }
+                        }).show();
                     }
                 }
-
-                DecimalFormat df = new DecimalFormat("#.00");
-                final String message = "Name: " + order.getOrdererName() + "\n" +
-                        "Order Items: " + order_items + "\n" +
-                        "Restaurant: " + order.getRestaurant() + "\n" +
-                        "Deliver to: " + order.getDeliveryLocation() + "\n" +
-                        "Your fee: $" + df.format(order.getDeliveryFee()) + "\n" +
-                        "Orderer's Total: $" + df.format(order.getTotal() - order.getOurFee());
-                alert.setMessage(message).setCancelable(true).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Firebase o = firebaseref.child("status_table").child(orders.get(pos).getUid());
-                        o.child("status").setValue(Constants.ORDER_ACCEPTED);
-                        o.child("delivererUID").setValue(firebaseref.getAuth().getUid());
-                        firebaseref.child("users").child(firebaseref.getAuth().getUid()).child("status").setValue("D");
-                        edit.putString("Status", "D");
-                        edit.commit();
-                        Intent i = new Intent(OrderChooserActivity.this, orderInProgressActivity.class);
-                        i.putExtra("acceptedOrder", message);
-                        i.putExtra("ordererUID", order.getUid());
-                        startActivity(i);
-                    }
-                }).show();
             }
-        }
-    }
 
-}
+        }

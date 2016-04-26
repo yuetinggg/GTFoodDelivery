@@ -91,7 +91,7 @@ public class SignupActivity extends AppCompatActivity {
                 //Statuses for each user, D for delivering, O for orderer (not to be confused with status
                 // of orders, N for neutral (doing neither)
                 userData.put("status", "N");
-                userData.put("customer_strip_id", "notSet");
+                userData.put("customer_stripe_id", "notSet");
                 userData.put("uid", stringObjectMap.get("uid").toString());
                 firebaseRef.child("users").child(stringObjectMap.get("uid").toString()).setValue(userData);
                 Intent intent = new Intent(getBaseContext(), LoginActivityMain.class);
