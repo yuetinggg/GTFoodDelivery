@@ -58,9 +58,26 @@ public class ratingUserActivity extends Activity {
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                numRatings = ((Long) dataSnapshot.child("num_ratings").getValue()).intValue();
-                currentRating = ((Long) dataSnapshot.child("rating").getValue()).doubleValue();
-                toBeRatedName = (String) dataSnapshot.child("name").getValue();
+                usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        numRatings = Integer.parseInt(dataSnapshot.child("num_ratings").getValue() + "");
+                        currentRating = Double.parseDouble(dataSnapshot.child("rating").getValue() + "");
+                        toBeRatedName = (String) dataSnapshot.child("name").getValue();
+                        //set fonts
+                        Typeface normalType = Typeface.createFromAsset(getAssets(), "fonts/YanoneKaffeesatz-Regular.ttf");
+                        Typeface comicFont = Typeface.createFromAsset(getAssets(), "fonts/BADABB.ttf");
+                        toBeRated.setTypeface(comicFont);
+                        toBeRated.setText(toBeRatedName);
+                        orderComplete.setTypeface(comicFont);
+                        pleaseRate.setTypeface(normalType);
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -69,13 +86,6 @@ public class ratingUserActivity extends Activity {
             }
         });
 
-        //set fonts
-        Typeface normalType = Typeface.createFromAsset(getAssets(), "fonts/YanoneKaffeesatz-Regular.ttf");
-        Typeface comicFont = Typeface.createFromAsset(getAssets(), "fonts/BADABB.ttf");
-        toBeRated.setTypeface(comicFont);
-        toBeRated.setText(toBeRatedName);
-        orderComplete.setTypeface(comicFont);
-        pleaseRate.setTypeface(normalType);
 
         //setting up the button
         done.setOnClickListener(new View.OnClickListener() {

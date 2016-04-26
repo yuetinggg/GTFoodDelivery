@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.Activity;
 import android.preference.PreferenceManager;
@@ -11,6 +12,7 @@ import android.text.Html;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ami.fundapter.BindDictionary;
@@ -23,9 +25,12 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +42,9 @@ public class OrderChooserActivity extends Activity {
     FunDapter<Order> adapter;
     SharedPreferences prefs;
     SharedPreferences.Editor edit;
+    Map<Firebase, ChildEventListener> listeners;
+    Query orderQuery;
+    ChildEventListener largeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,10 @@ public class OrderChooserActivity extends Activity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         edit = prefs.edit();
 
+        TextView title = (TextView) findViewById(R.id.titleHere);
+        Typeface comicFont = Typeface.createFromAsset(getAssets(), "fonts/BADABB.ttf");
+        title.setTypeface(comicFont);
+
 
         //Setting up the listview
         orders = (ListView) findViewById(R.id.orderList);
@@ -56,13 +68,14 @@ public class OrderChooserActivity extends Activity {
         firebaseref = new Firebase(Constants.BASE_URL);
         Firebase statusTableRef = firebaseref.child("status_table");
 
-        Query orderQuery = statusTableRef.orderByChild("status").equalTo(Constants.ORDER_REQUESTED);
+        orderQuery = statusTableRef.orderByChild("status").equalTo(Constants.ORDER_REQUESTED);
 
         //Setting up current available orders via querying Firebase
         //Current available orders are not sorted at all, ie. the deliverer has to go
         //through every order to find one that is at the same location as them
         //TODO: Implement sorting logic
         availableOrders = new ArrayList<>();
+        listeners = new HashMap<>();
         orderQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -76,8 +89,8 @@ public class OrderChooserActivity extends Activity {
                     //adding listeners to all of them so they can be deleted
                     // when their status changes
                     //ref references each individual order in status_table
-                    Firebase ref = child.getRef();
-                    ref.addChildEventListener(new ChildEventListener() {
+                    final Firebase ref = child.getRef();
+                    ChildEventListener thisListener = new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
@@ -87,6 +100,8 @@ public class OrderChooserActivity extends Activity {
                         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                             availableOrders.remove(order);
                             adapter.notifyDataSetChanged();
+                            listeners.remove(ref);
+                            ref.removeEventListener(this);
                         }
 
                         @Override
@@ -103,7 +118,9 @@ public class OrderChooserActivity extends Activity {
                         public void onCancelled(FirebaseError firebaseError) {
 
                         }
-                    });
+                    };
+                    listeners.put(ref, thisListener);
+                    ref.addChildEventListener(thisListener);
 
 
                 }
@@ -116,6 +133,39 @@ public class OrderChooserActivity extends Activity {
             }
         });
 
+        //dynamically adds new orders
+      /*  largeListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                System.out.println(dataSnapshot);
+                final Order order = dataSnapshot.getValue(Order.class);
+                order.setUid(dataSnapshot.getKey());
+                availableOrders.add(order);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        };
+        orderQuery.addChildEventListener(largeListener);*/
+
 
     }
 
@@ -125,14 +175,14 @@ public class OrderChooserActivity extends Activity {
         dictionary.addStringField(R.id.ordererName, new StringExtractor<Order>() {
             @Override
             public String getStringValue(Order order, int i) {
-                return order.getOrdererName();
-            }
-        });
-
-        dictionary.addStringField(R.id.ordererRating, new StringExtractor<Order>() {
-            @Override
-            public String getStringValue(Order order, int i) {
-                return order.getOrdererRating() + "";
+                String star = "\u2730";
+                int rating = order.getOrdererRating();
+                String toReturn = order.getOrdererName();
+                for (int j = 0; j < rating; j++) {
+                    toReturn += star;
+                }
+                return toReturn;
+                //return order.getOrdererName();
             }
         });
 
@@ -193,6 +243,12 @@ public class OrderChooserActivity extends Activity {
                     } else {
                         order_items += (order.getFoodItems().get(i));
                     }
+                }
+
+                //removing all listeners
+                //orderQuery.removeEventListener(largeListener);
+                for(Map.Entry<Firebase, ChildEventListener> entry : listeners.entrySet()) {
+                    entry.getKey().removeEventListener(entry.getValue());
                 }
 
                 DecimalFormat df = new DecimalFormat("#.00");

@@ -92,6 +92,7 @@ public class SignupActivity extends AppCompatActivity {
                 // of orders, N for neutral (doing neither)
                 userData.put("status", "N");
                 userData.put("customer_stripe_id", "notSet");
+                userData.put("num_ratings", 1);
                 userData.put("uid", stringObjectMap.get("uid").toString());
                 firebaseRef.child("users").child(stringObjectMap.get("uid").toString()).setValue(userData);
                 Intent intent = new Intent(getBaseContext(), LoginActivityMain.class);

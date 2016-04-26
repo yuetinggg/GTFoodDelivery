@@ -2,10 +2,12 @@ package com.example.apple.gtdelivery;
 
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.firebase.client.Firebase;
@@ -39,12 +41,25 @@ public class OrderOrDeliver extends Activity {
                 float touchX = event.getX();
                 float touchY = event.getY();
 
-                if (touchX < wholeView.getMeasuredWidth()/2) {
+                if (touchX < wholeView.getMeasuredWidth() / 2) {
                     toOrder();
                 } else {
                     toDeliver();
                 }
                 return true;
+            }
+        });
+
+        Typeface comicFont = Typeface.createFromAsset(getAssets(), "fonts/BADABB.ttf");
+        Button logout = (Button) findViewById(R.id.logoutButton);
+        logout.setTypeface(comicFont);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                localUser user = new localUser(OrderOrDeliver.this);
+                user.logOut();
+                Intent i = new Intent(OrderOrDeliver.this, LoginActivityMain.class);
+                startActivity(i);
             }
         });
 

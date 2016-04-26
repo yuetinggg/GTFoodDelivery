@@ -51,7 +51,7 @@ public class foundWaitingActivity extends Activity {
 
         //Setting up firebase
         Firebase.setAndroidContext(this);
-        Firebase firebaseref = new Firebase(Constants.BASE_URL);
+        final Firebase firebaseref = new Firebase(Constants.BASE_URL);
         final Firebase orderRef = firebaseref.child("status_table").child(firebaseref.getAuth().getUid());
 
         //getting the to be rated user's rating and number of people that rated them and name
@@ -59,9 +59,22 @@ public class foundWaitingActivity extends Activity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 toRate = (String) dataSnapshot.child("delivererUID").getValue();
-                Double total = ((Long) dataSnapshot.child("total").getValue()).doubleValue();
-                Double ourFee = ((Long) dataSnapshot.child("ourFee").getValue()).doubleValue();
+                Double total =(Double) dataSnapshot.child("total").getValue();
+                Double ourFee = (Double) dataSnapshot.child("ourFee").getValue();
                 toPay = total - ourFee;
+
+                final Firebase userRef = firebaseref.child("users").child(toRate);
+                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        delivererCustID = (String) dataSnapshot.child("customer_stripe_id").getValue();
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -71,19 +84,6 @@ public class foundWaitingActivity extends Activity {
         });
 
         //getting the custID of the deliverer
-
-        final Firebase userRef = firebaseref.child("users").child(toRate);
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                delivererCustID = (String) dataSnapshot.child("customer_stripe_id").getValue();
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
 
         verified.setOnClickListener(new View.OnClickListener() {
             @Override
