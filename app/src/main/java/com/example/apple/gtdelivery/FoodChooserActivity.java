@@ -64,9 +64,26 @@ public class FoodChooserActivity extends Activity implements View.OnClickListene
         //tacoBell menu
         String t = "Taco Bell";
         List<MenuItem> taco = new ArrayList<MenuItem>();
-        taco.add(new MenuItem(t, "Nachos", "$3.99"));
-        taco.add(new MenuItem(t, "Salad", "$5.99"));
-        taco.add(new MenuItem(t, "Burrito", "$4.99"));
+        taco.add(new MenuItem(t, "Breakfast Quesalupa", "$2.99"));
+        taco.add(new MenuItem(t, "Mini Skillet Bowl", "$1.00"));
+        taco.add(new MenuItem(t, "Grilled Breakfast Burrito", "$1.00"));
+        taco.add(new MenuItem(t, "Sausage Flatbread Quesadilla ", "$1.00"));
+        taco.add(new MenuItem(t, "Breakfast Crunchwrap", "$2.49"));
+        taco.add(new MenuItem(t, "Breakfast Soft Taco ", "$1.00"));
+        taco.add(new MenuItem(t, "Grande Scrambler", "$3.29"));
+        taco.add(new MenuItem(t, "Double Decker Taco", "$1.79"));
+        taco.add(new MenuItem(t, "Double Decker Taco Supreme", "$2.19"));
+        taco.add(new MenuItem(t, "Dorito Cheesy Gordita Crunch", "$3.19"));
+        taco.add(new MenuItem(t, "Nacho Cheese Doritos Locos Tacos Supreme", "$1.89"));
+        taco.add(new MenuItem(t, "Burrito Supreme", "$2.99"));
+        taco.add(new MenuItem(t, "Quesarito", "$2.49"));
+        taco.add(new MenuItem(t, "Bean Burrito", "$1.19"));
+        taco.add(new MenuItem(t, "Combo Burrito", "$2.39"));
+        taco.add(new MenuItem(t, "Quesadilla", "$3.19"));
+        taco.add(new MenuItem(t, "Crunchwrap Supreme", "$3.19"));
+        taco.add(new MenuItem(t, "Meximelt", "$2.49"));
+
+
 
         //pandaExpress menu
         String p = "Panda Express";

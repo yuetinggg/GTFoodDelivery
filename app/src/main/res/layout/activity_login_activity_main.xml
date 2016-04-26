@@ -8,9 +8,11 @@
 
 <LinearLayout
     android:orientation="vertical"
+    android:layout_gravity="center_vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="56dp"
+    android:layout_marginTop="30dp"
+    android:layout_marginBottom="30dp"
     android:paddingLeft="24dp"
     android:paddingRight="24dp">
 
@@ -19,6 +21,25 @@
         android:layout_height="72dp"
         android:layout_marginBottom="24dp"
         android:layout_gravity="center_horizontal" />-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Munch \n Money"
+        android:id="@+id/appTitle"
+        android:lineSpacingExtra="-15dp"
+        android:textSize="60dp"
+        android:textColor="@color/primaryPink"
+        android:paddingBottom="50dp"
+        android:layout_gravity="center_horizontal"
+        android:elevation="6dip" />
+
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"/>
 
     <!--  Email Label -->
     <android.support.design.widget.TextInputLayout

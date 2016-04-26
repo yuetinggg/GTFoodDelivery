@@ -30,6 +30,7 @@
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
         android:textColor="@color/white"
+        android:elevation="6dip"
         android:background="@color/primaryPink"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />

@@ -1,7 +1,9 @@
 package com.example.apple.gtdelivery;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,7 +29,7 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
-public class LoginActivityMain extends AppCompatActivity {
+public class LoginActivityMain extends Activity {
     private static final String TAG = "LoginActivityMain";
     private static final int REQUEST_SIGNUP = 0;
     private Firebase firebaseRef;
@@ -42,6 +44,10 @@ public class LoginActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_activity_main);
         ButterKnife.bind(this);
+
+        Typeface comicFont = Typeface.createFromAsset(getAssets(), "fonts/BADABB.ttf");
+        TextView title = (TextView) findViewById(R.id.appTitle);
+        title.setTypeface(comicFont);
 
         //Setting up the Firebase connection
         Firebase.setAndroidContext(this);
