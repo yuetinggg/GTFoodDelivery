@@ -169,6 +169,7 @@ public class ConfirmOrder extends Activity {
 
                                         Charge object = Charge.create(chargeParams);
                                         chargeID = object.getId();
+                                        System.out.println(chargeID);
 
 
                                         // NOW CREATE INTENT
@@ -193,38 +194,39 @@ public class ConfirmOrder extends Activity {
                                 public void onResult(Boolean result) {
                                     Toast.makeText(ConfirmOrder.this, "Charged Card", Toast.LENGTH_SHORT).show();
 
+                                    edit.putString("Status", "O");
+                                    edit.commit();
+
+                                    Firebase userRef = firebaseRef.child("status_table").child(firebaseRef.getAuth().getUid());
+                                    Firebase thisUser = firebaseRef.child("users").child(firebaseRef.getAuth().getUid()).child("status");
+                                    thisUser.setValue("O");
+
+                                    Map<String, Object> map = new HashMap<String, Object>();
+                                    ArrayList foodItems = new ArrayList<>();
+                                    for (MenuItem m : order) {
+                                        foodItems.add(m.getName());
+                                    }
+                                    //Assumes that the restaurant is the same restaurant
+                                    String restaurant = order.get(0).getrName();
+                                    map.put("email", user.getEmail());
+                                    map.put("ordererName", user.getName());
+                                    map.put("ordererRating", user.getRating());
+                                    map.put("foodItems", foodItems);
+                                    map.put("restaurant", restaurant);
+                                    map.put("deliveryFee", deliveryFee);
+                                    map.put("ourFee", ourFee);
+                                    map.put("total", total);
+                                    map.put("deliveryLocation", location.getText().toString());
+                                    map.put("status", Constants.ORDER_REQUESTED);
+                                    map.put("delivererUID", "notSet");
+                                    userRef.updateChildren(map);
+                                    Intent intent = new Intent(ConfirmOrder.this, OrderSearchActivity.class);
+                                    intent.putExtra("chargeID", chargeID);
+                                    startActivity(intent);
+                                    
                                 }
                             }).create().start();
 
-                    edit.putString("Status", "O");
-                    edit.commit();
-
-                    Firebase userRef = firebaseRef.child("status_table").child(firebaseRef.getAuth().getUid());
-                    Firebase thisUser = firebaseRef.child("users").child(firebaseRef.getAuth().getUid()).child("status");
-                    thisUser.setValue("O");
-
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    ArrayList foodItems = new ArrayList<>();
-                    for (MenuItem m : order) {
-                        foodItems.add(m.getName());
-                    }
-                    //Assumes that the restaurant is the same restaurant
-                    String restaurant = order.get(0).getrName();
-                    map.put("email", user.getEmail());
-                    map.put("ordererName", user.getName());
-                    map.put("ordererRating", user.getRating());
-                    map.put("foodItems", foodItems);
-                    map.put("restaurant", restaurant);
-                    map.put("deliveryFee", deliveryFee);
-                    map.put("ourFee", ourFee);
-                    map.put("total", total);
-                    map.put("deliveryLocation", location.getText().toString());
-                    map.put("status", Constants.ORDER_REQUESTED);
-                    map.put("delivererUID", "notSet");
-                    userRef.updateChildren(map);
-                    Intent intent = new Intent(ConfirmOrder.this, OrderSearchActivity.class);
-                    intent.putExtra("chargeID", chargeID);
-                    startActivity(intent);
                 }
             }
         });
