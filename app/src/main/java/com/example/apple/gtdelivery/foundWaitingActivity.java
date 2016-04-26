@@ -99,10 +99,15 @@ public class foundWaitingActivity extends Activity {
 
                                     //retrieving customer
                                     Customer deliverer = Customer.retrieve(delivererCustID);
-                                    String cardToPay = deliverer.getDefaultCard();
+                                    System.out.println(deliverer);
+                                    System.out.println(delivererCustID);
+                                    System.out.println("NODSFLSKDFJSDF");
+                                    String cardToPay = deliverer.getDefaultSource();
 
                                     Map<String, Object> transferParams = new HashMap<String, Object>();
                                     transferParams.put("amount", ((int) (toPay * 100)));
+                                    transferParams.put("source_type", "bank_account");
+                                    transferParams.put("bank_account_id", "ba_184Ymh2eZvKYlo2C2elhjcop");
                                     transferParams.put("currency", "usd");
                                     transferParams.put("destination", cardToPay);
                                     transferParams.put("description", "Delivery Fee");
