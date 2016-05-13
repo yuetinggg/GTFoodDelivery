@@ -67,7 +67,7 @@ public class foundWaitingActivity extends Activity {
                 userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        delivererCustID = (String) dataSnapshot.child("customer_stripe_id").getValue();
+                        delivererCustID = (String) dataSnapshot.child(Constants.USER_STRIPE_ID).getValue();
                     }
 
                     @Override
@@ -88,7 +88,7 @@ public class foundWaitingActivity extends Activity {
         verified.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                orderRef.child("status").setValue("D");
+                orderRef.child("status").setValue(Constants.ORDER_DELIVERED);
 
                 new AsyncJob.AsyncJobBuilder<Boolean>()
                         .doInBackground(new AsyncJob.AsyncAction<Boolean>() {

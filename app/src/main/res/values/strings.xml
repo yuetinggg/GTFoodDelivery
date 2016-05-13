@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">GTDelivery</string>
-    <string name="title_activity_login_activity_main">Sign in</string>
+    <string name="app_name">Munch Money</string>
+    <string name="title_activity_login_activity_main">Munch Money</string>
     <string name="yes">Confirm</string>
     <string name="no">Cancel</string>
 
@@ -26,6 +26,6 @@
     <string name="title_activity_order_in_progress">orderInProgressActivity</string>
     <string name="orderInProgress">ORDER IN PROGRESS</string>
     <string name="title_activity_dummy_delivered_activty">dummyDeliveredActivty</string>
-    <string name="title_activity_rating_user">ratingUserActivity</string>
+    <string name="title_activity_rating_user">Rate User</string>
     <string name="title_activity_found_waiting">foundWaitingActivity</string>
 </resources>

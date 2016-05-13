@@ -86,14 +86,14 @@ public class SignupActivity extends AppCompatActivity {
             public void onSuccess(Map<String, Object> stringObjectMap) {
                 //firebaseRef.updateChildren(stringObjectMap);
                 Map<String, Object> userData = new HashMap<String, Object>();
-                userData.put("email", email);
-                userData.put("name", name);
-                userData.put("rating", 5);
+                userData.put(Constants.USER_EMAIL, email);
+                userData.put(Constants.USER_NAME, name);
+                userData.put(Constants.USER_RATING, 5);
                 //Statuses for each user, D for delivering, O for orderer (not to be confused with status
                 // of orders, N for neutral (doing neither)
-                userData.put("status", "N");
-                userData.put("customer_stripe_id", "notSet");
-                userData.put("num_ratings", 1);
+                userData.put(Constants.USER_STATUS, Constants.NOTHING);
+                userData.put(Constants.USER_STRIPE_ID, Constants.USER_STRIPE_ID_DEFAULT);
+                userData.put(Constants.USER_NUM_RATINGS, 1);
                 userData.put("uid", stringObjectMap.get("uid").toString());
                 firebaseRef.child("users").child(stringObjectMap.get("uid").toString()).updateChildren(userData);
                 Intent intent = new Intent(getBaseContext(), LoginActivityMain.class);

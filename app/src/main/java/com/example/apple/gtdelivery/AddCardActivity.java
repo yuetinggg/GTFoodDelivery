@@ -64,7 +64,7 @@ public class AddCardActivity extends Activity {
 
         //Getting shared preferences to update status
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        custEmail = prefs.getString("Email", "");
+        custEmail = prefs.getString(Constants.USER_EMAIL, "");
         final SharedPreferences.Editor edit = prefs.edit();
 
         //If previous screen was confirm order, retrieve the order information

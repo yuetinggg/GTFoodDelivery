@@ -45,10 +45,10 @@ public class localUser {
     public void logUserIn() {
         SharedPreferences.Editor edit = pref.edit();
         edit.putBoolean("loggedIn", true);
-        edit.putString("Email", email);
-        edit.putString("Name", name);
-        edit.putInt("Rating", rating);
-        edit.putString("Status", status);
+        edit.putString(Constants.USER_EMAIL, email);
+        edit.putString(Constants.USER_NAME, name);
+        edit.putInt(Constants.USER_RATING, rating);
+        edit.putString(Constants.USER_STATUS, status);
         edit.putString("uid", uid);
         edit.putInt("num_ratings", num_ratings);
         edit.putString("customer_stripe_id", customer_stripe_id);
@@ -76,19 +76,19 @@ public class localUser {
 
 
     public String getEmail() {
-        return (email == null ? pref.getString("Email", ""):email);
+        return (email == null ? pref.getString(Constants.USER_EMAIL, ""):email);
     }
 
     public String getName() {
-        return (name == null ? pref.getString("Name", ""):email);
+        return (name == null ? pref.getString(Constants.USER_NAME, ""):name);
     }
 
     public int getRating() {
-        return (rating == 0 ? pref.getInt("Rating", 0):rating);
+        return (rating == 0 ? pref.getInt(Constants.USER_RATING, 0):rating);
     }
 
     public String getStatus() {
-        return (status == null ? pref.getString("Status", ""):email);
+        return (status == null ? pref.getString(Constants.USER_STATUS, ""):email);
     }
 
     public String getUid() {

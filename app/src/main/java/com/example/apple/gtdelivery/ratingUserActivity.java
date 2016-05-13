@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.Activity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class ratingUserActivity extends Activity {
     @Bind(R.id.doneRated) CircleButton done;
 
     String toRateUID;
+    String TAG = "RatingUserActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class ratingUserActivity extends Activity {
 
         //get to be rated;
         toRateUID = getIntent().getStringExtra("UID");
-
+        Log.d(TAG, "TO RATE UID: " + toRateUID);
         //setting up database connections
         Firebase.setAndroidContext(this);
         firebaseref = new Firebase(Constants.BASE_URL);
@@ -58,26 +60,17 @@ public class ratingUserActivity extends Activity {
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        numRatings = Integer.parseInt(dataSnapshot.child("num_ratings").getValue() + "");
-                        currentRating = Double.parseDouble(dataSnapshot.child("rating").getValue() + "");
-                        toBeRatedName = (String) dataSnapshot.child("name").getValue();
-                        //set fonts
-                        Typeface normalType = Typeface.createFromAsset(getAssets(), "fonts/YanoneKaffeesatz-Regular.ttf");
-                        Typeface comicFont = Typeface.createFromAsset(getAssets(), "fonts/BADABB.ttf");
-                        toBeRated.setTypeface(comicFont);
-                        toBeRated.setText(toBeRatedName);
-                        orderComplete.setTypeface(comicFont);
-                        pleaseRate.setTypeface(normalType);
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-
-                    }
-                });
+                Log.d(TAG, "NUM_RATINGS: " + dataSnapshot.child(Constants.USER_NUM_RATINGS).getValue());
+                numRatings = Integer.parseInt(dataSnapshot.child(Constants.USER_NUM_RATINGS).getValue() + "");
+                currentRating = Double.parseDouble(dataSnapshot.child(Constants.USER_RATING).getValue() + "");
+                toBeRatedName = (String) dataSnapshot.child(Constants.USER_NAME).getValue();
+                //set fonts
+                Typeface normalType = Typeface.createFromAsset(getAssets(), Constants.NORMAL_FONT);
+                Typeface comicFont = Typeface.createFromAsset(getAssets(), Constants.COMIC_FONT);
+                toBeRated.setTypeface(comicFont);
+                toBeRated.setText(toBeRatedName);
+                orderComplete.setTypeface(comicFont);
+                pleaseRate.setTypeface(normalType);
             }
 
             @Override
@@ -97,9 +90,9 @@ public class ratingUserActivity extends Activity {
                 usersRef.child("num_ratings").setValue(numRatings+1);
                 System.out.println(newRating);
                 usersRef.child("rating").setValue(newRating);
-                firebaseref.child("users").child(currentUID).child("status").setValue("N");
+                firebaseref.child("users").child(currentUID).child("status").setValue(Constants.NOTHING);
 
-                edit.putString("Status", "N");
+                edit.putString("Status", Constants.NOTHING);
                 edit.commit();
 
                 //Go to the main page
